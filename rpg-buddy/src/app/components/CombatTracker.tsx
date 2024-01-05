@@ -5,6 +5,12 @@ import { Character } from '../lib/definitions';
 
 const CombatTracker: React.FC = () => {
   const [combatCharacters, setCombatCharacters] = useState<Character[]>([]);
+  const [sortDescending, toggleSortDescending] = useState(true);
+  const toggleButtonText=sortDescending?"Descending": "Ascending";
+
+  const handleToggleSortDescending = () => {
+    toggleSortDescending(!sortDescending);
+  };
 
   const handleAddToCombat = () => {
     // Logic to load character file, ask for initiative, and add to combatCharacters
@@ -38,6 +44,7 @@ const CombatTracker: React.FC = () => {
 
               const newCharacter: Character = {
                 name: jsonData.name || 'Unknown',
+                fileReference: file,
                 dynamicData: jsonData, // Store all dynamic data fields
                 initiative: isNaN(initiative) ? 0 : initiative, // Use null if initiative is 0 a valid number
               };
@@ -80,23 +87,36 @@ const CombatTracker: React.FC = () => {
     window.alert(JSON.stringify(character.dynamicData, null, 2));
   };
 
+  if (sortDescending) {
+    combatCharacters.sort((a, b) => b.initiative - a.initiative)
+  } else {
+    combatCharacters.sort((a, b) => a.initiative - b.initiative)
+  }
   return (
     <div>
-      <h2>Combat Tracker</h2>
-      <button onClick={handleAddToCombat}>Add Character to Combat</button>
-      <table>
+      {/* <h2>Combat Tracker</h2> */}
+      {/* <div className="flex flex-col items-center justify-between p-2"> */}
+      {/* <div class="grid grid-cols-2 gap-4">
+  <div>Element 1</div>
+  <div>Element 2</div>
+</div> */}
+      <div className="flex p-2">
+      <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded-full mb-4 mr-4" onClick={handleAddToCombat}>Add Character to Combat</button>
+      <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded-full mb-4" onClick={handleToggleSortDescending}>{toggleButtonText}</button>
+      </div>
+      <table className="border-collapse border">
         <thead>
           <tr>
-            <th>Character</th>
-            <th>Initiative</th>
+            <th className="border p-2">Character</th>
+            <th className="border p-2">Initiative</th>
           </tr>
         </thead>
         <tbody>
           {/* Render rows based on combatCharacters */}
           {combatCharacters.map((character, index) => (
             <tr key={index} onClick={() => handleCharacterClick(character)}>
-              <td>{character.name}</td>
-              <td>{character.initiative}</td>
+              <td className="border p-2">{character.name}</td>
+              <td className="border p-2">{character.initiative}</td>
             </tr>
           ))}
         </tbody>
