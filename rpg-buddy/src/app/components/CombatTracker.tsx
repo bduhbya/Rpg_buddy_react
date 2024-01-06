@@ -1,12 +1,12 @@
 // components/CombatTracker.tsx
-'use client';
-import React, { useState } from 'react';
-import { Character } from '../lib/definitions';
+"use client";
+import React, { useState } from "react";
+import { Character } from "../lib/definitions";
 
 const CombatTracker: React.FC = () => {
   const [combatCharacters, setCombatCharacters] = useState<Character[]>([]);
   const [sortDescending, toggleSortDescending] = useState(true);
-  const toggleButtonText=sortDescending?"Descending": "Ascending";
+  const toggleButtonText = sortDescending ? "Descending" : "Ascending";
 
   const handleToggleSortDescending = () => {
     toggleSortDescending(!sortDescending);
@@ -14,11 +14,11 @@ const CombatTracker: React.FC = () => {
 
   const handleAddToCombat = () => {
     // Logic to load character file, ask for initiative, and add to combatCharacters
-    const input = document.createElement('input');
-    input.type = 'file';
+    const input = document.createElement("input");
+    input.type = "file";
 
     // Listen for the "change" event when the user selects a file
-    input.addEventListener('change', (event) => {
+    input.addEventListener("change", (event) => {
       const fileInput = event.target as HTMLInputElement;
       const files = fileInput.files;
 
@@ -37,13 +37,16 @@ const CombatTracker: React.FC = () => {
             const jsonData = JSON.parse(reader.result as string);
 
             // Prompt the user to enter initiative
-            const initiativeInput = prompt('Enter Initiative for ' + jsonData.name, '');
+            const initiativeInput = prompt(
+              "Enter Initiative for " + jsonData.name,
+              "",
+            );
 
             if (initiativeInput !== null) {
               const initiative = parseInt(initiativeInput, 10);
 
               const newCharacter: Character = {
-                name: jsonData.name || 'Unknown',
+                name: jsonData.name || "Unknown",
                 fileReference: file,
                 dynamicData: jsonData, // Store all dynamic data fields
                 initiative: isNaN(initiative) ? 0 : initiative, // Use null if initiative is 0 a valid number
@@ -51,9 +54,8 @@ const CombatTracker: React.FC = () => {
 
               setCombatCharacters([...combatCharacters, newCharacter]);
             }
-
           } catch (error) {
-            console.error('Error parsing JSON file:', error);
+            console.error("Error parsing JSON file:", error);
           }
         };
       }
@@ -88,9 +90,9 @@ const CombatTracker: React.FC = () => {
   };
 
   if (sortDescending) {
-    combatCharacters.sort((a, b) => b.initiative - a.initiative)
+    combatCharacters.sort((a, b) => b.initiative - a.initiative);
   } else {
-    combatCharacters.sort((a, b) => a.initiative - b.initiative)
+    combatCharacters.sort((a, b) => a.initiative - b.initiative);
   }
   return (
     <div>
@@ -101,8 +103,18 @@ const CombatTracker: React.FC = () => {
   <div>Element 2</div>
 </div> */}
       <div className="flex p-2">
-      <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded-full mb-4 mr-4" onClick={handleAddToCombat}>Add Character to Combat</button>
-      <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded-full mb-4" onClick={handleToggleSortDescending}>{toggleButtonText}</button>
+        <button
+          className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded-full mb-4 mr-4"
+          onClick={handleAddToCombat}
+        >
+          Add Character to Combat
+        </button>
+        <button
+          className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded-full mb-4"
+          onClick={handleToggleSortDescending}
+        >
+          {toggleButtonText}
+        </button>
       </div>
       <table className="border-collapse border">
         <thead>
