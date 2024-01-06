@@ -11,4 +11,4 @@ jobs:
           node-version: '18'
       - name: Change directory and run build
         working-directory: rpg-buddy
-        run: npx next build
+        run: yarn; npx next build
