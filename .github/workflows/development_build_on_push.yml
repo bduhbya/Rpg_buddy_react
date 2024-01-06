@@ -5,6 +5,7 @@ jobs:
   build_project:
     runs-on: ubuntu-latest
     steps:
+      - run: cd rpg-buddy
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v3
         with:
