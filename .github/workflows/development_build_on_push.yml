@@ -1,0 +1,13 @@
+name: push_build
+run-name: ${{ github.actor }} is building the project
+on: [push]
+jobs:
+  build_project:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+      - run: npm install -g npx
+      - run: npx next build
