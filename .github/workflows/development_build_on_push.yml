@@ -9,5 +9,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
-      - run: cd rpg-buddy
-      - run: npx next build
+      - name: Change directory and run build
+        working-directory: rpg-buddy
+        run: npx next build
