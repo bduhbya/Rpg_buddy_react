@@ -51,19 +51,12 @@ const CombatTracker: React.FC = () => {
     input.click();
   };
 
-  const handleConfirmAddCharacter = (initiative: number) => {
-    if (pendingCharacter) {
-      const newCharacter: Character = {
-        ...pendingCharacter,
-        initiative: isNaN(initiative) ? 0 : initiative,
-      };
+  const handleConfirmAddCharacter = (newCharacter: Character) => {
+    // Add the character to combatCharacters
+    setCombatCharacters([...combatCharacters, newCharacter]);
 
-      // Add the character to combatCharacters
-      setCombatCharacters([...combatCharacters, newCharacter]);
-
-      // Clear pendingCharacter
-      setPendingCharacter(null);
-    }
+    // Clear pendingCharacter
+    setPendingCharacter(null);
   };
 
   const handleCancelAddCharacter = () => {
@@ -72,7 +65,7 @@ const CombatTracker: React.FC = () => {
   };
 
   const handleCharacterClick = (character: Character) => {
-    // Show a modal or use alert to display the dynamic data
+    // TODO: activate a callback to set the character display in parent 
     const dynamicDataKeys = Object.keys(character.dynamicData);
 
     const tableRows = dynamicDataKeys.map((key) => (
