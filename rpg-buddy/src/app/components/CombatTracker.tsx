@@ -7,7 +7,9 @@ const CombatTracker: React.FC = () => {
   const [combatCharacters, setCombatCharacters] = useState<Character[]>([]);
   const [sortDescending, toggleSortDescending] = useState(true);
   const toggleButtonText = sortDescending ? "Descending" : "Ascending";
-  const [pendingCharacter, setPendingCharacter] = useState<Character | null>(null);
+  const [pendingCharacter, setPendingCharacter] = useState<Character | null>(
+    null,
+  );
 
   const handleToggleSortDescending = () => {
     toggleSortDescending(!sortDescending);
@@ -65,7 +67,7 @@ const CombatTracker: React.FC = () => {
   };
 
   const handleCharacterClick = (character: Character) => {
-    // TODO: activate a callback to set the character display in parent 
+    // TODO: activate a callback to set the character display in parent
     const dynamicDataKeys = Object.keys(character.dynamicData);
 
     const tableRows = dynamicDataKeys.map((key) => (
@@ -90,7 +92,10 @@ const CombatTracker: React.FC = () => {
 
   // Check for duplicate names
   const isDuplicateOrEmpty = pendingCharacter?.name
-    ? combatCharacters.some((char) => char.name === pendingCharacter.name || pendingCharacter.name == null)
+    ? combatCharacters.some(
+        (char) =>
+          char.name === pendingCharacter.name || pendingCharacter.name == null,
+      )
     : false;
 
   if (sortDescending) {
@@ -122,8 +127,7 @@ const CombatTracker: React.FC = () => {
           onCancel={handleCancelAddCharacter}
           duplicateEntryOrEmpty={isDuplicateOrEmpty}
         />
-      )
-      }
+      )}
       <table className="border-collapse border">
         <thead>
           <tr>
