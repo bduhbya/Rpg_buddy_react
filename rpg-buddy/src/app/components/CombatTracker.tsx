@@ -6,13 +6,40 @@ import InitiativeInputDialog from "./InitiativeInputDialog";
 const CombatTracker: React.FC = () => {
   const [combatCharacters, setCombatCharacters] = useState<Character[]>([]);
   const [sortDescending, toggleSortDescending] = useState(true);
+  const [currentCharacterIndex, setCurrentCharacterIndex] = useState<number>(0);
   const toggleButtonText = sortDescending ? "Descending" : "Ascending";
   const [pendingCharacter, setPendingCharacter] = useState<Character | null>(
     null,
   );
 
+  // SVG checkmark icon
+  const CheckmarkIcon: React.FC = () => {
+    return <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="green"
+      className="h-4 w-4"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="M5 13l4 4L19 7" />
+    </svg>;
+  };
+
   const handleToggleSortDescending = () => {
+    // Toggle the sort order
     toggleSortDescending(!sortDescending);
+
+    // Update the selected character index based on the new order
+    // When the ascending or descending order is toggled, the current
+    // index should now be the same distance from the top of the array
+    // as it was from the bottom of the array before toggling
+    const newIndex = combatCharacters.length - currentCharacterIndex - 1;
+
+    setCurrentCharacterIndex(newIndex);
   };
 
   const handleAddToCombat = () => {
@@ -90,12 +117,22 @@ const CombatTracker: React.FC = () => {
     window.alert(JSON.stringify(character.dynamicData, null, 2));
   };
 
+  const handleMoveCharacter = (direction: "up" | "down") => {
+    const newIndex =
+      direction === "up"
+        ? (currentCharacterIndex - 1 + combatCharacters.length) %
+        combatCharacters.length
+        : (currentCharacterIndex + 1) % combatCharacters.length;
+
+    setCurrentCharacterIndex(newIndex);
+  };
+
   // Check for duplicate names
   const isDuplicateOrEmpty = pendingCharacter?.name
     ? combatCharacters.some(
-        (char) =>
-          char.name === pendingCharacter.name || pendingCharacter.name == null,
-      )
+      (char) =>
+        char.name === pendingCharacter.name || pendingCharacter.name == null,
+    )
     : false;
 
   if (sortDescending) {
@@ -131,6 +168,8 @@ const CombatTracker: React.FC = () => {
       <table className="border-collapse border">
         <thead>
           <tr>
+            {/* New column for tracking the current character */}
+            <th className="border p-2">Current</th>
             <th className="border p-2">Character</th>
             <th className="border p-2">Initiative</th>
           </tr>
@@ -138,13 +177,35 @@ const CombatTracker: React.FC = () => {
         <tbody>
           {/* Render rows based on combatCharacters */}
           {combatCharacters.map((character, index) => (
-            <tr key={index} onClick={() => handleCharacterClick(character)}>
+            <tr
+              key={index}
+              onClick={() => handleCharacterClick(character)}
+            // className={index === currentCharacterIndex ? "bg-gray-200" : ""}
+            >
+              <td className="border p-2">
+                {index === currentCharacterIndex && <CheckmarkIcon />}
+              </td>
               <td className="border p-2">{character.name}</td>
               <td className="border p-2">{character.initiative}</td>
             </tr>
           ))}
         </tbody>
       </table>
+      {/* Button to move the current character */}
+      <div className="flex p-2">
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded-full mb-4 mr-4"
+          onClick={() => handleMoveCharacter("up")}
+        >
+          Move Up
+        </button>
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded-full mb-4"
+          onClick={() => handleMoveCharacter("down")}
+        >
+          Move Down
+        </button>
+      </div>
     </div>
   );
 };
