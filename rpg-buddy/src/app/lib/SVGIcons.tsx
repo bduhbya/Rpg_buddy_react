@@ -1,6 +1,7 @@
 // SVG checkmark icon
-  export const CheckmarkIconPositive: React.FC = () => {
-    return <svg
+export const CheckmarkIconPositive: React.FC = () => {
+  return (
+    <svg
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"
@@ -11,6 +12,8 @@
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeWidth="2"
-        d="M5 13l4 4L19 7" />
-    </svg>;
-  };
+        d="M5 13l4 4L19 7"
+      />
+    </svg>
+  );
+};
