@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Character } from "../lib/definitions";
 import InitiativeInputDialog from "./InitiativeInputDialog";
+import {CheckmarkIconPositive} from "../lib/SVGIcons";
 
 const CombatTracker: React.FC = () => {
   const [combatCharacters, setCombatCharacters] = useState<Character[]>([]);
@@ -12,22 +13,6 @@ const CombatTracker: React.FC = () => {
     null,
   );
 
-  // SVG checkmark icon
-  const CheckmarkIcon: React.FC = () => {
-    return <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="green"
-      className="h-4 w-4"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        d="M5 13l4 4L19 7" />
-    </svg>;
-  };
 
   const handleToggleSortDescending = () => {
     // Toggle the sort order
@@ -183,7 +168,7 @@ const CombatTracker: React.FC = () => {
             // className={index === currentCharacterIndex ? "bg-gray-200" : ""}
             >
               <td className="border p-2">
-                {index === currentCharacterIndex && <CheckmarkIcon />}
+                {index === currentCharacterIndex && CheckmarkIconPositive />}
               </td>
               <td className="border p-2">{character.name}</td>
               <td className="border p-2">{character.initiative}</td>
