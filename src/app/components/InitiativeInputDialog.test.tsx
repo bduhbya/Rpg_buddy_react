@@ -1,6 +1,7 @@
 import { render, fireEvent } from "@testing-library/react";
 import InitiativeInputDialog from "./InitiativeInputDialog";
 import { mockCharacter } from "../lib/definitionMocks";
+import { DEFAULT_INITIATIVE } from "./InitiativeInputDialog";
 import "@testing-library/jest-dom";
 
 describe("InitiativeInputDialog", () => {
@@ -18,27 +19,9 @@ describe("InitiativeInputDialog", () => {
       />,
     );
 
-    describe("InitiativeInputDialog", () => {
-      const mockOnConfirm = jest.fn();
-      const mockOnCancel = jest.fn();
-      // const mockCharacter = { name: 'Test', initiative: 0 };
-
-      it("renders correctly", () => {
-        const { getByText, getByLabelText } = render(
-          <InitiativeInputDialog
-            character={mockCharacter}
-            onConfirm={mockOnConfirm}
-            onCancel={mockOnCancel}
-            duplicateEntryOrEmpty={false}
-          />,
-        );
-        expect(getByText("Enter Initiative")).toBeInTheDocument();
-      });
-    });
+    expect(getByText("Enter Initiative")).toBeInTheDocument();
     expect(getByLabelText("Character Name:")).toHaveValue(mockCharacter.name);
-    expect(getByLabelText("Initiative:")).toHaveValue(
-      mockCharacter.initiative.toString(),
-    );
+    expect(getByLabelText("Initiative:")).toHaveValue(DEFAULT_INITIATIVE);
   });
 
   it("changes input values correctly", () => {
@@ -59,7 +42,7 @@ describe("InitiativeInputDialog", () => {
     });
 
     expect(getByLabelText("Character Name:")).toHaveValue("New Name");
-    expect(getByLabelText("Initiative:")).toHaveValue("10");
+    expect(getByLabelText("Initiative:")).toHaveValue(10);
   });
 
   it("calls onConfirm and onCancel correctly", () => {
