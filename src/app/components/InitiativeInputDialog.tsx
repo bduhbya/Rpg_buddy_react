@@ -1,5 +1,5 @@
 // components/InitiativeInputDialog.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Character } from "../lib/definitions";
 
 type InitiativeInputDialogProps = {
@@ -8,6 +8,7 @@ type InitiativeInputDialogProps = {
   onCancel: () => void;
   duplicateEntryOrEmpty: boolean;
 };
+export const DEFAULT_INITIATIVE = 0;
 
 const InitiativeInputDialog: React.FC<InitiativeInputDialogProps> = ({
   character,
@@ -15,7 +16,7 @@ const InitiativeInputDialog: React.FC<InitiativeInputDialogProps> = ({
   onCancel,
   duplicateEntryOrEmpty,
 }) => {
-  const [initiative, setInitiative] = useState<number>(0);
+  const [initiative, setInitiative] = useState<number>(DEFAULT_INITIATIVE);
   const [name, setName] = useState<string>(character.name);
   const handleConfirm = () => {
     const newCharacter: Character = {
