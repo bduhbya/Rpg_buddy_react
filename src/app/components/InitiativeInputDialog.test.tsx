@@ -3,11 +3,11 @@ import InitiativeInputDialog from "./InitiativeInputDialog";
 import { mockCharacter } from "../lib/definitionMocks";
 import { DEFAULT_INITIATIVE } from "./InitiativeInputDialog";
 import "@testing-library/jest-dom";
+import React from "react";
 
 describe("InitiativeInputDialog", () => {
   const mockOnConfirm = jest.fn();
   const mockOnCancel = jest.fn();
-  // const mockCharacter = { name: 'Test', initiative: 0 };
 
   it("renders correctly", () => {
     const { getByText, getByLabelText } = render(
@@ -43,6 +43,25 @@ describe("InitiativeInputDialog", () => {
 
     expect(getByLabelText("Character Name:")).toHaveValue("New Name");
     expect(getByLabelText("Initiative:")).toHaveValue(10);
+  });
+
+  it("prevents non-numeric initiative input", () => {
+    const { getByLabelText } = render(
+      <InitiativeInputDialog
+        character={mockCharacter}
+        onConfirm={mockOnConfirm}
+        onCancel={mockOnCancel}
+        duplicateEntryOrEmpty={false}
+      />,
+    );
+
+    // Try to change the initiative to a non-numeric value
+    fireEvent.change(getByLabelText("Initiative:"), {
+      target: { value: "not a number" },
+    });
+
+    // Check that the initiative value has not changed
+    expect(getByLabelText("Initiative:")).toHaveValue(DEFAULT_INITIATIVE);
   });
 
   it("calls onConfirm and onCancel correctly", () => {

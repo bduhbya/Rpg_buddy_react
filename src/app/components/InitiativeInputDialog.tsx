@@ -57,7 +57,12 @@ const InitiativeInputDialog: React.FC<InitiativeInputDialogProps> = ({
             type="number"
             className="w-full border rounded p-2 appearance-none focus:outline-none focus:border-blue-500 text-black"
             value={initiative}
-            onChange={(e) => setInitiative(parseInt(e.target.value, 10))}
+            onChange={(e) => {
+              const value = parseInt(e.target.value, 10);
+              if (!isNaN(value)) {
+                setInitiative(value);
+              }
+            }}
           />
         </label>
         <div className="flex space-x-4">
