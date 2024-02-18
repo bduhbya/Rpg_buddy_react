@@ -6,6 +6,30 @@ import React from "react";
 describe("CombatTracker", () => {
   it("renders correctly", () => {
     const { getByText } = render(<CombatTracker />);
+    //   const handleAddToCombat = jest.fn();
+    // const handleToggleSortDescending = jest.fn();
+
+    // const { getByText } = render(
+    //   <CombatTracker 
+    //     handleAddToCombat={handleAddToCombat} 
+    //     handleToggleSortDescending={handleToggleSortDescending} 
+    //   />
+    // );
+
+    const addToCombatButton = getByText('Add Character to Combat');
+    const toggleSortButton = getByText('Toggle Sort');
+
+    // Check that the buttons are rendered
+    expect(addToCombatButton).toBeInTheDocument();
+    expect(toggleSortButton).toBeInTheDocument();
+
+    // Simulate clicking the buttons
+    // fireEvent.click(addToCombatButton);
+    // fireEvent.click(toggleSortButton);
+
+    // // Check that the click handlers were called
+    // expect(handleAddToCombat).toHaveBeenCalled();
+    // expect(handleToggleSortDescending).toHaveBeenCalled();
 
     expect(getByText("Descending")).toBeInTheDocument();
   });
@@ -24,6 +48,7 @@ describe("CombatTracker", () => {
     const { getByText } = render(<CombatTracker />);
 
     // TODO: Mock the file input and FileReader to test adding a character
+    // TODO:  may need to create a file loading component to test this
   });
 
   it("confirms adding a character correctly", () => {

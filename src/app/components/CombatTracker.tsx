@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Character } from "../lib/definitions";
 import InitiativeInputDialog from "./InitiativeInputDialog";
 import { CheckmarkIconPositive } from "../lib/SVGIcons";
+import strings from './strings';
 
 const CombatTracker: React.FC = () => {
   const [combatCharacters, setCombatCharacters] = useState<Character[]>([]);
@@ -29,7 +30,7 @@ const CombatTracker: React.FC = () => {
   const handleAddToCombat = () => {
     // TODO: create utility
     // Prompt for opening a character file
-    const input = document.createElement("input");
+    const input = document.createElement("input"); // <-- Check if this is title of input dialogue
     input.type = "file";
 
     input.addEventListener("change", (event) => {
@@ -105,7 +106,7 @@ const CombatTracker: React.FC = () => {
     const newIndex =
       direction === "up"
         ? (currentCharacterIndex - 1 + combatCharacters.length) %
-          combatCharacters.length
+        combatCharacters.length
         : (currentCharacterIndex + 1) % combatCharacters.length;
 
     setCurrentCharacterIndex(newIndex);
@@ -114,9 +115,9 @@ const CombatTracker: React.FC = () => {
   // Check for duplicate names
   const isDuplicateOrEmpty = pendingCharacter?.name
     ? combatCharacters.some(
-        (char) =>
-          char.name === pendingCharacter.name || pendingCharacter.name == null,
-      )
+      (char) =>
+        char.name === pendingCharacter.name || pendingCharacter.name == null,
+    )
     : false;
 
   if (sortDescending) {
@@ -131,7 +132,7 @@ const CombatTracker: React.FC = () => {
           className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded-full mb-4 mr-4"
           onClick={handleAddToCombat}
         >
-          Add Character to Combat
+          {strings.addToCombatButton}
         </button>
         <button
           className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded-full mb-4"
@@ -164,7 +165,7 @@ const CombatTracker: React.FC = () => {
             <tr
               key={index}
               onClick={() => handleCharacterClick(character)}
-              // className={index === currentCharacterIndex ? "bg-gray-200" : ""}
+            // className={index === currentCharacterIndex ? "bg-gray-200" : ""}
             >
               <td className="border p-2">
                 {index === currentCharacterIndex && <CheckmarkIconPositive />}
