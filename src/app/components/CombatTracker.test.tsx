@@ -2,7 +2,7 @@ import { render, fireEvent } from "@testing-library/react";
 import CombatTracker from "./CombatTracker";
 import "@testing-library/jest-dom";
 import React from "react";
-import strings from '../../strings';
+import strings from "../../strings";
 
 describe("CombatTracker", () => {
   it("renders correctly", () => {
@@ -11,9 +11,9 @@ describe("CombatTracker", () => {
     // const handleToggleSortDescending = jest.fn();
 
     // const { getByText } = render(
-    //   <CombatTracker 
-    //     handleAddToCombat={handleAddToCombat} 
-    //     handleToggleSortDescending={handleToggleSortDescending} 
+    //   <CombatTracker
+    //     handleAddToCombat={handleAddToCombat}
+    //     handleToggleSortDescending={handleToggleSortDescending}
     //   />
     // );
 

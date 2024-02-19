@@ -3,13 +3,15 @@ import React, { useState } from "react";
 import { Character } from "../lib/definitions";
 import InitiativeInputDialog from "./InitiativeInputDialog";
 import { CheckmarkIconPositive } from "../lib/SVGIcons";
-import strings from '../../strings';
+import strings from "../../strings";
 
 const CombatTracker: React.FC = () => {
   const [combatCharacters, setCombatCharacters] = useState<Character[]>([]);
   const [sortDescending, toggleSortDescending] = useState(true);
   const [currentCharacterIndex, setCurrentCharacterIndex] = useState<number>(0);
-  const toggleButtonText = sortDescending ? strings.descendingLabel : strings.ascendingLabel;
+  const toggleButtonText = sortDescending
+    ? strings.descendingLabel
+    : strings.ascendingLabel;
   const [pendingCharacter, setPendingCharacter] = useState<Character | null>(
     null,
   );
@@ -109,7 +111,7 @@ const CombatTracker: React.FC = () => {
     const newIndex =
       direction === DIRECTION_UP
         ? (currentCharacterIndex - 1 + combatCharacters.length) %
-        combatCharacters.length
+          combatCharacters.length
         : (currentCharacterIndex + 1) % combatCharacters.length;
 
     setCurrentCharacterIndex(newIndex);
@@ -118,9 +120,9 @@ const CombatTracker: React.FC = () => {
   // Check for duplicate names
   const isDuplicateOrEmpty = pendingCharacter?.name
     ? combatCharacters.some(
-      (char) =>
-        char.name === pendingCharacter.name || pendingCharacter.name == null,
-    )
+        (char) =>
+          char.name === pendingCharacter.name || pendingCharacter.name == null,
+      )
     : false;
 
   if (sortDescending) {
@@ -157,7 +159,9 @@ const CombatTracker: React.FC = () => {
         <thead>
           <tr>
             {/* New column for tracking the current character */}
-            <th className="border p-2">{strings.currentCharacterColumnLabel}</th>
+            <th className="border p-2">
+              {strings.currentCharacterColumnLabel}
+            </th>
             <th className="border p-2">{strings.characterNameColumnLabel}</th>
             <th className="border p-2">{strings.initiativeColumnLabel}</th>
           </tr>
@@ -168,7 +172,7 @@ const CombatTracker: React.FC = () => {
             <tr
               key={index}
               onClick={() => handleCharacterClick(character)}
-            // className={index === currentCharacterIndex ? "bg-gray-200" : ""}
+              // className={index === currentCharacterIndex ? "bg-gray-200" : ""}
             >
               <td className="border p-2">
                 {index === currentCharacterIndex && <CheckmarkIconPositive />}
