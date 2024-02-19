@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Character } from "../lib/definitions";
 import InitiativeInputDialog from "./InitiativeInputDialog";
 import { CheckmarkIconPositive } from "../lib/SVGIcons";
-import strings from "../../strings";
+import strings from "@/strings";
 
 const CombatTracker: React.FC = () => {
   const [combatCharacters, setCombatCharacters] = useState<Character[]>([]);
