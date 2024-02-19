@@ -2,6 +2,7 @@ import { render, fireEvent } from "@testing-library/react";
 import CombatTracker from "./CombatTracker";
 import "@testing-library/jest-dom";
 import React from "react";
+import strings from '../../strings';
 
 describe("CombatTracker", () => {
   it("renders correctly", () => {
@@ -16,8 +17,8 @@ describe("CombatTracker", () => {
     //   />
     // );
 
-    const addToCombatButton = getByText('Add Character to Combat');
-    const toggleSortButton = getByText('Toggle Sort');
+    const addToCombatButton = getByText(strings.addToCombatButton);
+    const toggleSortButton = getByText(strings.descendingLabel);
 
     // Check that the buttons are rendered
     expect(addToCombatButton).toBeInTheDocument();
@@ -31,17 +32,19 @@ describe("CombatTracker", () => {
     // expect(handleAddToCombat).toHaveBeenCalled();
     // expect(handleToggleSortDescending).toHaveBeenCalled();
 
-    expect(getByText("Descending")).toBeInTheDocument();
+    expect(getByText(strings.currentCharacterColumnLabel)).toBeInTheDocument();
+    expect(getByText(strings.characterNameColumnLabel)).toBeInTheDocument();
+    expect(getByText(strings.initiativeColumnLabel)).toBeInTheDocument();
   });
 
   it("toggles sort order correctly", () => {
     const { getByText } = render(<CombatTracker />);
 
-    fireEvent.click(getByText("Descending"));
-    expect(getByText("Ascending")).toBeInTheDocument();
+    fireEvent.click(getByText(strings.descendingLabel));
+    expect(getByText(strings.ascendingLabel)).toBeInTheDocument();
 
-    fireEvent.click(getByText("Ascending"));
-    expect(getByText("Descending")).toBeInTheDocument();
+    fireEvent.click(getByText(strings.ascendingLabel));
+    expect(getByText(strings.descendingLabel)).toBeInTheDocument();
   });
 
   it("adds a character to combat correctly", () => {

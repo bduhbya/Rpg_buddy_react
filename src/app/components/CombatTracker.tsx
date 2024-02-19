@@ -9,10 +9,13 @@ const CombatTracker: React.FC = () => {
   const [combatCharacters, setCombatCharacters] = useState<Character[]>([]);
   const [sortDescending, toggleSortDescending] = useState(true);
   const [currentCharacterIndex, setCurrentCharacterIndex] = useState<number>(0);
-  const toggleButtonText = sortDescending ? "Descending" : "Ascending";
+  const toggleButtonText = sortDescending ? strings.descendingLabel : strings.ascendingLabel;
   const [pendingCharacter, setPendingCharacter] = useState<Character | null>(
     null,
   );
+  const DIRECTION_UP = "up";
+  const DIRECTION_DOWN = "down";
+  type Direction = typeof DIRECTION_UP | typeof DIRECTION_DOWN;
 
   const handleToggleSortDescending = () => {
     // Toggle the sort order
@@ -102,9 +105,9 @@ const CombatTracker: React.FC = () => {
     window.alert(JSON.stringify(character.dynamicData, null, 2));
   };
 
-  const handleMoveCharacter = (direction: "up" | "down") => {
+  const handleMoveCharacter = (direction: Direction) => {
     const newIndex =
-      direction === "up"
+      direction === DIRECTION_UP
         ? (currentCharacterIndex - 1 + combatCharacters.length) %
         combatCharacters.length
         : (currentCharacterIndex + 1) % combatCharacters.length;
@@ -154,9 +157,9 @@ const CombatTracker: React.FC = () => {
         <thead>
           <tr>
             {/* New column for tracking the current character */}
-            <th className="border p-2">Current</th>
-            <th className="border p-2">Character</th>
-            <th className="border p-2">Initiative</th>
+            <th className="border p-2">{strings.currentCharacterColumnLabel}</th>
+            <th className="border p-2">{strings.characterNameColumnLabel}</th>
+            <th className="border p-2">{strings.initiativeColumnLabel}</th>
           </tr>
         </thead>
         <tbody>
@@ -180,13 +183,13 @@ const CombatTracker: React.FC = () => {
       <div className="flex p-2">
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded-full mb-4 mr-4"
-          onClick={() => handleMoveCharacter("up")}
+          onClick={() => handleMoveCharacter(DIRECTION_UP)}
         >
           Move Up
         </button>
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded-full mb-4"
-          onClick={() => handleMoveCharacter("down")}
+          onClick={() => handleMoveCharacter(DIRECTION_DOWN)}
         >
           Move Down
         </button>
