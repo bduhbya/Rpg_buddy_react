@@ -4,6 +4,7 @@ import { Character } from "../lib/definitions";
 import InitiativeInputDialog from "./InitiativeInputDialog";
 import { CheckmarkIconPositive } from "../lib/SVGIcons";
 import strings from "@/strings";
+import { promptForFile } from "../lib/fileInput";
 
 const CombatTracker: React.FC = () => {
   const [combatCharacters, setCombatCharacters] = useState<Character[]>([]);
@@ -32,42 +33,29 @@ const CombatTracker: React.FC = () => {
     setCurrentCharacterIndex(newIndex);
   };
 
-  const handleAddToCombat = () => {
-    // TODO: create utility
-    // Prompt for opening a character file
-    const input = document.createElement("input"); // <-- Check if this is title of input dialogue
-    input.type = "file";
+  const handleAddToCombat = async () => {
+    const file = await promptForFile();
 
-    input.addEventListener("change", (event) => {
-      const fileInput = event.target as HTMLInputElement;
-      const files = fileInput.files;
+    if (file) {
+      const reader = new FileReader();
 
-      if (files && files.length > 0) {
-        const file = files[0];
+      reader.onload = () => {
+        try {
+          const jsonData = JSON.parse(reader.result as string);
 
-        const reader = new FileReader();
+          setPendingCharacter({
+            name: jsonData.name || "UNKNOWN",
+            fileReference: file,
+            dynamicData: jsonData,
+            initiative: 0,
+          });
+        } catch (error) {
+          console.error("Error parsing JSON file:", error);
+        }
+      };
 
-        reader.onload = () => {
-          try {
-            // Save the file contents in pendingCharacter
-            const jsonData = JSON.parse(reader.result as string);
-
-            setPendingCharacter({
-              name: jsonData.name || "UNKNOWN",
-              fileReference: file,
-              dynamicData: jsonData,
-              initiative: 0,
-            });
-          } catch (error) {
-            console.error("Error parsing JSON file:", error);
-          }
-        };
-
-        reader.readAsText(file);
-      }
-    });
-
-    input.click();
+      reader.readAsText(file);
+    }
   };
 
   const handleConfirmAddCharacter = (newCharacter: Character) => {

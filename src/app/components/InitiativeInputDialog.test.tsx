@@ -21,8 +21,12 @@ describe("InitiativeInputDialog", () => {
     );
 
     expect(getByText(strings.initiativePrompt)).toBeInTheDocument();
-    expect(getByLabelText(strings.characterLabel)).toHaveValue(mockCharacter.name);
-    expect(getByLabelText(strings.initiativeLabel)).toHaveValue(DEFAULT_INITIATIVE);
+    expect(getByLabelText(strings.characterLabel)).toHaveValue(
+      mockCharacter.name,
+    );
+    expect(getByLabelText(strings.initiativeLabel)).toHaveValue(
+      DEFAULT_INITIATIVE,
+    );
   });
 
   it("changes input values correctly", () => {
@@ -62,7 +66,9 @@ describe("InitiativeInputDialog", () => {
     });
 
     // Check that the initiative value has not changed
-    expect(getByLabelText(strings.initiativeLabel)).toHaveValue(DEFAULT_INITIATIVE);
+    expect(getByLabelText(strings.initiativeLabel)).toHaveValue(
+      DEFAULT_INITIATIVE,
+    );
   });
 
   it("calls onConfirm and onCancel correctly", () => {
