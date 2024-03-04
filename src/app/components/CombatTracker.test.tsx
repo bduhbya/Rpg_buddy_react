@@ -3,6 +3,12 @@ import CombatTracker from "./CombatTracker";
 import "@testing-library/jest-dom";
 import React from "react";
 import strings from "../../strings";
+import { mockCharacterFile } from "../lib/definitionMocks";
+import { promptForFile } from '../lib/fileInput';
+
+jest.mock('../lib/fileInput', () => ({
+  promptForFile: jest.fn(),
+}));
 
 describe("CombatTracker", () => {
   it("renders correctly", () => {
@@ -47,9 +53,53 @@ describe("CombatTracker", () => {
     expect(getByText(strings.descendingLabel)).toBeInTheDocument();
   });
 
-  it("adds a character to combat correctly", () => {
+  it("handles null file input", async () => {
     const { getByText } = render(<CombatTracker />);
+    (promptForFile as jest.MockedFunction<typeof promptForFile>).mockResolvedValue(null);
 
+    fireEvent.click(getByText(strings.addToCombatButton));
+
+    // Wait for promises to resolve
+    await new Promise((resolve => setTimeout(resolve, 0)));
+
+    // Check that the error handling code was executed
+    // This depends on how your component handles the error.
+    // For example, if it shows an error message, you can check that the message is displayed:
+    expect(getByText('No file selected')).toBeInTheDocument();
+    // TODO: Mock the file input and FileReader to test adding a character
+    // TODO:  may need to create a file loading component to test this
+  });
+
+  it("handles file input error", async () => {
+    const { getByText } = render(<CombatTracker />);
+    (promptForFile as jest.MockedFunction<typeof promptForFile>).mockRejectedValue(new Error('File input error'));
+
+    fireEvent.click(getByText(strings.addToCombatButton));
+
+    // Wait for promises to resolve
+    await new Promise((resolve => setTimeout(resolve, 0)));
+
+    // Check that the error handling code was executed
+    // This depends on how your component handles the error.
+    // For example, if it shows an error message, you can check that the message is displayed:
+    expect(getByText('No file selected')).toBeInTheDocument();
+    // TODO: Mock the file input and FileReader to test adding a character
+    // TODO:  may need to create a file loading component to test this
+  });
+
+  it("inserts character", async () => {
+    const { getByText } = render(<CombatTracker />);
+    (promptForFile as jest.MockedFunction<typeof promptForFile>).mockResolvedValue(mockCharacterFile);
+
+    fireEvent.click(getByText(strings.addToCombatButton));
+
+    // Wait for promises to resolve
+    await new Promise((resolve => setTimeout(resolve, 0)));
+
+    // Check that the error handling code was executed
+    // This depends on how your component handles the error.
+    // For example, if it shows an error message, you can check that the message is displayed:
+    expect(getByText("Test Warrior")).toBeInTheDocument();
     // TODO: Mock the file input and FileReader to test adding a character
     // TODO:  may need to create a file loading component to test this
   });
