@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Character } from "../lib/definitions";
 import strings from "@/strings";
 
-type InitiativeInputDialogProps = {
+export type InitiativeInputDialogProps = {
   character: Character;
   onConfirm: (newCharacter: Character) => void;
   onCancel: () => void;

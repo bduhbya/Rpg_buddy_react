@@ -5,10 +5,21 @@ import React from "react";
 import strings from "../../strings";
 import { mockCharacterFile } from "../lib/definitionMocks";
 import { promptForFile } from '../lib/fileInput';
+import { InitiativeInputDialogProps } from './InitiativeInputDialog';
+import { Character } from '../lib/definitions';
+
+var handleCancelHook: () => void;
+var handleConfirmHook: (newCharacter: Character) => void;
 
 jest.mock('../lib/fileInput', () => ({
   promptForFile: jest.fn(),
 }));
+
+jest.mock('./InitiativeInputDialog', () => (props: InitiativeInputDialogProps) => {
+  handleCancelHook = props.onCancel;
+  handleConfirmHook = props.onConfirm;
+  return <div>Mock InitiativeInputDialog</div>;
+});
 
 describe("CombatTracker", () => {
   it("renders correctly", () => {
