@@ -1,12 +1,18 @@
 import { Character } from "./definitions";
+import path from 'path';
+import fs from 'fs';
 
-const characterFile = new File([], "../testData/character_data.json");
+const mockCharacterDataPath = path.join(__dirname, '..', 'testData', 'character_data.json');
+const mockCharacterData = fs.readFileSync(mockCharacterDataPath, 'utf8');;
+
+const mockCharacterDataParsed = JSON.parse(mockCharacterData);
+const characterFile = new File([mockCharacterData], mockCharacterDataPath);
 
 export const mockCharacter: Character = {
-  name: "Test",
+  name: mockCharacterDataParsed.name,
   initiative: 0,
   fileReference: characterFile,
-  dynamicData: {},
+  dynamicData: mockCharacterDataParsed,
 };
 
-  export const mockCharacterFile = characterFile;
+export const mockCharacterFile = characterFile;
