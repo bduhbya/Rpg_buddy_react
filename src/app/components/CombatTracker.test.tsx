@@ -1,4 +1,4 @@
-import { render, fireEvent } from "@testing-library/react";
+import { render, fireEvent, act, waitFor } from "@testing-library/react";
 import CombatTracker from "./CombatTracker";
 import "@testing-library/jest-dom";
 import React from "react";
@@ -10,6 +10,7 @@ import { Character } from '../lib/definitions';
 
 var handleCancelHook: () => void;
 var handleConfirmHook: (newCharacter: Character) => void;
+var addedCharacter: Character;
 
 jest.mock('../lib/fileInput', () => ({
   promptForFile: jest.fn(),
@@ -18,6 +19,7 @@ jest.mock('../lib/fileInput', () => ({
 jest.mock('./InitiativeInputDialog', () => (props: InitiativeInputDialogProps) => {
   handleCancelHook = props.onCancel;
   handleConfirmHook = props.onConfirm;
+  addedCharacter = props.character;
   return <div>Mock InitiativeInputDialog</div>;
 });
 
@@ -107,12 +109,10 @@ describe("CombatTracker", () => {
     // Wait for promises to resolve
     await new Promise((resolve => setTimeout(resolve, 0)));
 
-    // Check that the error handling code was executed
-    // This depends on how your component handles the error.
-    // For example, if it shows an error message, you can check that the message is displayed:
-    expect(getByText("Test Warrior")).toBeInTheDocument();
-    // TODO: Mock the file input and FileReader to test adding a character
-    // TODO:  may need to create a file loading component to test this
+    await waitFor(() => expect(getByText("Mock InitiativeInputDialog")).toBeInTheDocument());
+    handleConfirmHook(addedCharacter);
+    await waitFor(() =>  expect(getByText(addedCharacter.name)).toBeInTheDocument());
+    expect(getByText(addedCharacter.initiative.toString())).toBeInTheDocument();
   });
 
   it("confirms adding a character correctly", () => {
