@@ -5,14 +5,12 @@ import InitiativeInputDialog from "./InitiativeInputDialog";
 import { CheckmarkIconPositive } from "../lib/SVGIcons";
 import strings from "@/strings";
 import { promptForFile } from "../lib/fileInput";
-import {BasicDialog, DialogData, DialogType} from "./BasicDialog";
+import { BasicDialog, DialogData, DialogType } from "./BasicDialog";
 
 const CombatTracker: React.FC = () => {
   const DIRECTION_UP = "up";
   const DIRECTION_DOWN = "down";
   type Direction = typeof DIRECTION_UP | typeof DIRECTION_DOWN;
-  const FILE_NOT_SELECTED = "No file selected";
-  const FILE_PARSING_ERROR = "Unable to parse JSON file";
 
   const [combatCharacters, setCombatCharacters] = useState<Character[]>([]);
   const [sortDescending, toggleSortDescending] = useState(true);
@@ -23,7 +21,9 @@ const CombatTracker: React.FC = () => {
   const [pendingCharacter, setPendingCharacter] = useState<Character | null>(
     null,
   );
-  const [currentDialogData, setCurrentDialogData] = useState<DialogData | null>(null);
+  const [currentDialogData, setCurrentDialogData] = useState<DialogData | null>(
+    null,
+  );
 
   const handleToggleSortDescending = () => {
     // Toggle the sort order
@@ -55,14 +55,18 @@ const CombatTracker: React.FC = () => {
             initiative: 0,
           });
         } catch (error) {
-          setCurrentDialogData(new DialogData(FILE_PARSING_ERROR, DialogType.WARNING));
+          setCurrentDialogData(
+            new DialogData(strings.fileParsingError, DialogType.WARNING),
+          );
           console.error("Error parsing JSON file:", error);
         }
       };
 
       reader.readAsText(file);
     } else {
-      setCurrentDialogData(new DialogData(FILE_NOT_SELECTED, DialogType.WARNING));
+      setCurrentDialogData(
+        new DialogData(strings.fileNotSelected, DialogType.WARNING),
+      );
       console.log("No file selected");
     }
   };
@@ -149,7 +153,6 @@ const CombatTracker: React.FC = () => {
           dialogData={currentDialogData}
           onConfirm={() => setCurrentDialogData(null)}
         />
-
       )}
       {/* Render the custom initiative input dialog */}
       {pendingCharacter && (

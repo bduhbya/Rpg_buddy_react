@@ -4,27 +4,30 @@ import "@testing-library/jest-dom";
 import React from "react";
 import strings from "../../strings";
 import { mockCharacterFile } from "../lib/definitionMocks";
-import { promptForFile } from '../lib/fileInput';
-import { InitiativeInputDialogProps } from './InitiativeInputDialog';
-import { Character } from '../lib/definitions';
+import { promptForFile } from "../lib/fileInput";
+import { InitiativeInputDialogProps } from "./InitiativeInputDialog";
+import { Character } from "../lib/definitions";
 
 var handleCancelHook: () => void;
 var handleConfirmHook: (newCharacter: Character) => void;
 var addedCharacter: Character;
 
-jest.mock('../lib/fileInput', () => ({
+jest.mock("../lib/fileInput", () => ({
   promptForFile: jest.fn(),
 }));
 
-jest.mock('./InitiativeInputDialog', () => (props: InitiativeInputDialogProps) => {
-  handleCancelHook = props.onCancel;
-  handleConfirmHook = props.onConfirm;
-  addedCharacter = props.character;
-  return <div>Mock InitiativeInputDialog</div>;
-});
+jest.mock(
+  "./InitiativeInputDialog",
+  () => (props: InitiativeInputDialogProps) => {
+    handleCancelHook = props.onCancel;
+    handleConfirmHook = props.onConfirm;
+    addedCharacter = props.character;
+    return <div>Mock InitiativeInputDialog</div>;
+  },
+);
 
 describe("CombatTracker", () => {
-  it("renders correctly", () => {
+  it("renders component initial ui", () => {
     const { getByText } = render(<CombatTracker />);
     //   const handleAddToCombat = jest.fn();
     // const handleToggleSortDescending = jest.fn();
@@ -68,50 +71,63 @@ describe("CombatTracker", () => {
 
   it("handles null file input", async () => {
     const { getByText } = render(<CombatTracker />);
-    (promptForFile as jest.MockedFunction<typeof promptForFile>).mockResolvedValue(null);
+    (
+      promptForFile as jest.MockedFunction<typeof promptForFile>
+    ).mockResolvedValue(null);
 
     fireEvent.click(getByText(strings.addToCombatButton));
 
     // Wait for promises to resolve
-    await new Promise((resolve => setTimeout(resolve, 0)));
+    await new Promise((resolve) => setTimeout(resolve, 0));
 
+    await waitFor(() =>
+      expect(getByText("Mock InitiativeInputDialog")).toBeInTheDocument(),
+    );
     // Check that the error handling code was executed
     // This depends on how your component handles the error.
     // For example, if it shows an error message, you can check that the message is displayed:
-    expect(getByText('No file selected')).toBeInTheDocument();
+    expect(getByText(strings.fileNotSelected)).toBeInTheDocument();
     // TODO: Mock the file input and FileReader to test adding a character
     // TODO:  may need to create a file loading component to test this
   });
 
   it("handles file input error", async () => {
     const { getByText } = render(<CombatTracker />);
-    (promptForFile as jest.MockedFunction<typeof promptForFile>).mockRejectedValue(new Error('File input error'));
+    (
+      promptForFile as jest.MockedFunction<typeof promptForFile>
+    ).mockRejectedValue(new Error("File input error"));
 
     fireEvent.click(getByText(strings.addToCombatButton));
 
     // Wait for promises to resolve
-    await new Promise((resolve => setTimeout(resolve, 0)));
+    await new Promise((resolve) => setTimeout(resolve, 0));
 
     // Check that the error handling code was executed
     // This depends on how your component handles the error.
     // For example, if it shows an error message, you can check that the message is displayed:
-    expect(getByText('No file selected')).toBeInTheDocument();
+    expect(getByText("No file selected")).toBeInTheDocument();
     // TODO: Mock the file input and FileReader to test adding a character
     // TODO:  may need to create a file loading component to test this
   });
 
   it("inserts character", async () => {
     const { getByText } = render(<CombatTracker />);
-    (promptForFile as jest.MockedFunction<typeof promptForFile>).mockResolvedValue(mockCharacterFile);
+    (
+      promptForFile as jest.MockedFunction<typeof promptForFile>
+    ).mockResolvedValue(mockCharacterFile);
 
     fireEvent.click(getByText(strings.addToCombatButton));
 
     // Wait for promises to resolve
-    await new Promise((resolve => setTimeout(resolve, 0)));
+    await new Promise((resolve) => setTimeout(resolve, 0));
 
-    await waitFor(() => expect(getByText("Mock InitiativeInputDialog")).toBeInTheDocument());
+    await waitFor(() =>
+      expect(getByText("Mock InitiativeInputDialog")).toBeInTheDocument(),
+    );
     handleConfirmHook(addedCharacter);
-    await waitFor(() =>  expect(getByText(addedCharacter.name)).toBeInTheDocument());
+    await waitFor(() =>
+      expect(getByText(addedCharacter.name)).toBeInTheDocument(),
+    );
     expect(getByText(addedCharacter.initiative.toString())).toBeInTheDocument();
   });
 

@@ -1,9 +1,14 @@
 import { Character } from "./definitions";
-import path from 'path';
-import fs from 'fs';
+import path from "path";
+import fs from "fs";
 
-const mockCharacterDataPath = path.join(__dirname, '..', 'testData', 'character_data.json');
-const mockCharacterData = fs.readFileSync(mockCharacterDataPath, 'utf8');;
+const mockCharacterDataPath = path.join(
+  __dirname,
+  "..",
+  "testData",
+  "character_data.json",
+);
+const mockCharacterData = fs.readFileSync(mockCharacterDataPath, "utf8");
 
 const mockCharacterDataParsed = JSON.parse(mockCharacterData);
 const characterFile = new File([mockCharacterData], mockCharacterDataPath);

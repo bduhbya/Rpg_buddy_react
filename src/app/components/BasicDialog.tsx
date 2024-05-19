@@ -1,9 +1,10 @@
-import React from 'react';
+import React from "react";
+import strings from "@/strings";
 
 export enum DialogType {
-  WARNING = 'Warning',
-  ERROR = 'Error',
-  INFO = 'Info'
+  WARNING = "Warning",
+  ERROR = "Error",
+  INFO = "Info",
 }
 
 interface DialogDetail {
@@ -11,14 +12,20 @@ interface DialogDetail {
   icon: string;
 }
 
-const dialogDetails: Record<DialogType, DialogDetail> = {
-  [DialogType.WARNING]: { title: 'Warning', icon: '⚠️' },
-  [DialogType.ERROR]: { title: 'Error', icon: '❌' },
-  [DialogType.INFO]: { title: 'Info', icon: 'ℹ️' },
+export const dialogDetails: Record<DialogType, DialogDetail> = {
+  [DialogType.WARNING]: {
+    title: strings.warningTitle,
+    icon: strings.warningIcon,
+  },
+  [DialogType.ERROR]: { title: strings.errorTitle, icon: strings.errorIcon },
+  [DialogType.INFO]: { title: strings.infoTitle, icon: strings.infoIcon },
 };
 
 export class DialogData {
-  constructor(public message: string, public dialogType: DialogType) {}
+  constructor(
+    public message: string,
+    public dialogType: DialogType,
+  ) {}
 }
 
 export interface BasicDialogProps {
@@ -26,8 +33,10 @@ export interface BasicDialogProps {
   onConfirm: () => void;
 }
 
-export const BasicDialog: React.FC<BasicDialogProps> = ({ dialogData, onConfirm }) => {
-
+export const BasicDialog: React.FC<BasicDialogProps> = ({
+  dialogData,
+  onConfirm,
+}) => {
   const handleConfirm = () => {
     onConfirm();
   };

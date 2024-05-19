@@ -1,5 +1,7 @@
 // src/strings.ts
 
+import { warn } from "console";
+
 export default {
   // Common strings
   cancelString: "Cancel",
@@ -11,6 +13,8 @@ export default {
   initiativeColumnLabel: "Initiative",
   ascendingLabel: "Ascending",
   descendingLabel: "Descending",
+  fileNotSelected:"No file selected",
+  fileParsingError: "Unable to parse JSON file",
 
   // InitiativeInputDialog strings
   initiativePrompt: "Enter Initiative",
@@ -19,4 +23,13 @@ export default {
   initiativeLabel: "Initiative:",
   characterLabel: "Character Name:",
   addCharacterButton: "Add Character",
+
+  // BasicDialog strings
+  warningTitle: "Warning",
+  errorTitle: "Error",
+  infoTitle: "Info",
+  confirmButton: "Confirm",
+  warningIcon: "⚠️",
+  errorIcon: "❌",
+  infoIcon: "ℹ️",
 };
