@@ -29,16 +29,6 @@ jest.mock(
 describe("CombatTracker", () => {
   it("renders component initial ui", () => {
     const { getByText } = render(<CombatTracker />);
-    //   const handleAddToCombat = jest.fn();
-    // const handleToggleSortDescending = jest.fn();
-
-    // const { getByText } = render(
-    //   <CombatTracker
-    //     handleAddToCombat={handleAddToCombat}
-    //     handleToggleSortDescending={handleToggleSortDescending}
-    //   />
-    // );
-
     const addToCombatButton = getByText(strings.addToCombatButton);
     const toggleSortButton = getByText(strings.descendingLabel);
 
@@ -46,19 +36,12 @@ describe("CombatTracker", () => {
     expect(addToCombatButton).toBeInTheDocument();
     expect(toggleSortButton).toBeInTheDocument();
 
-    // Simulate clicking the buttons
-    // fireEvent.click(addToCombatButton);
-    // fireEvent.click(toggleSortButton);
-
-    // // Check that the click handlers were called
-    // expect(handleAddToCombat).toHaveBeenCalled();
-    // expect(handleToggleSortDescending).toHaveBeenCalled();
-
     expect(getByText(strings.currentCharacterColumnLabel)).toBeInTheDocument();
     expect(getByText(strings.characterNameColumnLabel)).toBeInTheDocument();
     expect(getByText(strings.initiativeColumnLabel)).toBeInTheDocument();
   });
 
+  // TODO: add tests for sorting to check active character is preserved
   it("toggles sort order correctly", () => {
     const { getByText } = render(<CombatTracker />);
 
@@ -83,12 +66,8 @@ describe("CombatTracker", () => {
     await waitFor(() =>
       expect(getByText("Mock InitiativeInputDialog")).toBeInTheDocument(),
     );
-    // Check that the error handling code was executed
-    // This depends on how your component handles the error.
-    // For example, if it shows an error message, you can check that the message is displayed:
+    // File not selected dialog should be displayed
     expect(getByText(strings.fileNotSelected)).toBeInTheDocument();
-    // TODO: Mock the file input and FileReader to test adding a character
-    // TODO:  may need to create a file loading component to test this
   });
 
   it("handles file input error", async () => {
@@ -102,12 +81,7 @@ describe("CombatTracker", () => {
     // Wait for promises to resolve
     await new Promise((resolve) => setTimeout(resolve, 0));
 
-    // Check that the error handling code was executed
-    // This depends on how your component handles the error.
-    // For example, if it shows an error message, you can check that the message is displayed:
-    expect(getByText("No file selected")).toBeInTheDocument();
-    // TODO: Mock the file input and FileReader to test adding a character
-    // TODO:  may need to create a file loading component to test this
+    expect(getByText(strings.fileNotSelected)).toBeInTheDocument();
   });
 
   it("inserts character", async () => {
