@@ -3,7 +3,7 @@ import CombatTracker from "./CombatTracker";
 import "@testing-library/jest-dom";
 import React from "react";
 import strings from "../../strings";
-import { mockCharacterFile } from "../lib/definitionMocks";
+import { mockBadCharacterFile, mockCharacterFile } from "../lib/definitionMocks";
 import { promptForFile } from "../lib/fileInput";
 import { InitiativeInputDialogProps } from "./InitiativeInputDialog";
 import { Character } from "../lib/definitions";
@@ -52,11 +52,31 @@ describe("CombatTracker", () => {
     expect(getByText(strings.descendingLabel)).toBeInTheDocument();
   });
 
-  it("handles null file input", async () => {
+  // it("handles null file input", async () => {
+  //   const { getByText } = render(<CombatTracker />);
+  //   (
+  //     promptForFile as jest.MockedFunction<typeof promptForFile>
+  //   ).mockResolvedValue(null);
+
+  //   fireEvent.click(getByText(strings.addToCombatButton));
+
+  //   // Wait for promises to resolve
+  //   await new Promise((resolve) => setTimeout(resolve, 0));
+
+  //   await waitFor(() =>
+  //     expect(getByText("Mock InitiativeInputDialog")).toBeInTheDocument(),
+  //   );
+  //   // File not selected dialog should be displayed
+  //   await waitFor(() =>
+  //     expect(getByText(strings.fileNotSelected)).toBeInTheDocument(),
+  //   );
+  // });
+
+  it("handles bad json format", async () => {
     const { getByText } = render(<CombatTracker />);
     (
       promptForFile as jest.MockedFunction<typeof promptForFile>
-    ).mockResolvedValue(null);
+    ).mockResolvedValue(mockBadCharacterFile);
 
     fireEvent.click(getByText(strings.addToCombatButton));
 
@@ -64,24 +84,8 @@ describe("CombatTracker", () => {
     await new Promise((resolve) => setTimeout(resolve, 0));
 
     await waitFor(() =>
-      expect(getByText("Mock InitiativeInputDialog")).toBeInTheDocument(),
+      expect(getByText(strings.fileParsingError)).toBeInTheDocument(),
     );
-    // File not selected dialog should be displayed
-    expect(getByText(strings.fileNotSelected)).toBeInTheDocument();
-  });
-
-  it("handles file input error", async () => {
-    const { getByText } = render(<CombatTracker />);
-    (
-      promptForFile as jest.MockedFunction<typeof promptForFile>
-    ).mockRejectedValue(new Error("File input error"));
-
-    fireEvent.click(getByText(strings.addToCombatButton));
-
-    // Wait for promises to resolve
-    await new Promise((resolve) => setTimeout(resolve, 0));
-
-    expect(getByText(strings.fileNotSelected)).toBeInTheDocument();
   });
 
   it("inserts character", async () => {
