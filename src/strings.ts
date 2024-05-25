@@ -13,7 +13,7 @@ export default {
   initiativeColumnLabel: "Initiative",
   ascendingLabel: "Ascending",
   descendingLabel: "Descending",
-  fileNotSelected:"No file selected",
+  fileNotSelected: "No file selected",
   fileParsingError: "Unable to parse JSON file",
 
   // InitiativeInputDialog strings

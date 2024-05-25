@@ -3,7 +3,10 @@ import CombatTracker from "./CombatTracker";
 import "@testing-library/jest-dom";
 import React from "react";
 import strings from "../../strings";
-import { mockBadCharacterFile, mockCharacterFile } from "../lib/definitionMocks";
+import {
+  mockBadCharacterFile,
+  mockCharacterFile,
+} from "../lib/definitionMocks";
 import { promptForFile } from "../lib/fileInput";
 import { InitiativeInputDialogProps } from "./InitiativeInputDialog";
 import { Character } from "../lib/definitions";
