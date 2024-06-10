@@ -1,8 +1,6 @@
 // src/strings.ts
 
-import { warn } from "console";
-
-export default {
+const strings = {
   // Common strings
   cancelString: "Cancel",
 
@@ -33,3 +31,5 @@ export default {
   errorIcon: "❌",
   infoIcon: "ℹ️",
 };
+
+export default strings;

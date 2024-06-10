@@ -21,11 +21,17 @@ jest.mock("../lib/fileInput", () => ({
 
 jest.mock(
   "./InitiativeInputDialog",
-  () => (props: InitiativeInputDialogProps) => {
-    handleCancelHook = props.onCancel;
-    handleConfirmHook = props.onConfirm;
-    addedCharacter = props.character;
-    return <div>Mock InitiativeInputDialog</div>;
+  () => {
+    const MockInitiativeInputDialog = (props: InitiativeInputDialogProps) => {
+      handleCancelHook = props.onCancel;
+      handleConfirmHook = props.onConfirm;
+      addedCharacter = props.character;
+      return <div>Mock InitiativeInputDialog</div>;
+    };
+
+    MockInitiativeInputDialog.displayName = 'MockInitiativeInputDialog';
+
+    return MockInitiativeInputDialog;
   },
 );
 
