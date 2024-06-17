@@ -13,6 +13,8 @@ const strings = {
   descendingLabel: "Descending",
   fileNotSelected: "No file selected",
   fileParsingError: "Unable to parse JSON file",
+  moveUpLabel: "Move Up",
+  moveDownLabel: "Move Down",
 
   // InitiativeInputDialog strings
   initiativePrompt: "Enter Initiative",

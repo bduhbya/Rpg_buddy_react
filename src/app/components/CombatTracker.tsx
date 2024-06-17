@@ -14,7 +14,6 @@ const CombatTracker: React.FC = () => {
 
   const [combatCharacters, setCombatCharacters] = useState<Character[]>([]);
   const [sortDescending, toggleSortDescending] = useState(true);
-  const [currentCharacterIndex, setCurrentCharacterIndex] = useState<number>(0);
   const toggleButtonText = sortDescending
     ? strings.descendingLabel
     : strings.ascendingLabel;
@@ -28,14 +27,6 @@ const CombatTracker: React.FC = () => {
   const handleToggleSortDescending = () => {
     // Toggle the sort order
     toggleSortDescending(!sortDescending);
-
-    // Update the selected character index based on the new order
-    // When the ascending or descending order is toggled, the current
-    // index should now be the same distance from the top of the array
-    // as it was from the bottom of the array before toggling
-    const newIndex = combatCharacters.length - currentCharacterIndex - 1;
-
-    setCurrentCharacterIndex(newIndex);
   };
 
   const handleAddToCombat = async () => {
@@ -53,6 +44,7 @@ const CombatTracker: React.FC = () => {
             fileReference: file,
             dynamicData: jsonData,
             initiative: 0,
+            active: false,
           });
         } catch (error) {
           setCurrentDialogData(
@@ -72,6 +64,9 @@ const CombatTracker: React.FC = () => {
   };
 
   const handleConfirmAddCharacter = (newCharacter: Character) => {
+    if (combatCharacters.length === 0) {
+      newCharacter.active = true;
+    }
     // Add the character to combatCharacters
     setCombatCharacters([...combatCharacters, newCharacter]);
 
@@ -108,14 +103,21 @@ const CombatTracker: React.FC = () => {
     window.alert(JSON.stringify(character.dynamicData, null, 2));
   };
 
-  const handleMoveCharacter = (direction: Direction) => {
+  const handleMoveActiveCharacter = (direction: Direction) => {
+    var currentCharacterIndex = combatCharacters.findIndex(
+      (char) => char.active,
+    );
     const newIndex =
       direction === DIRECTION_UP
         ? (currentCharacterIndex - 1 + combatCharacters.length) %
           combatCharacters.length
         : (currentCharacterIndex + 1) % combatCharacters.length;
 
-    setCurrentCharacterIndex(newIndex);
+    // Update the active character
+    const newCombatCharacters = [...combatCharacters];
+    newCombatCharacters[currentCharacterIndex].active = false;
+    newCombatCharacters[newIndex].active = true;
+    setCombatCharacters(newCombatCharacters);
   };
 
   // Check for duplicate names
@@ -175,15 +177,14 @@ const CombatTracker: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {/* Render rows based on combatCharacters */}
           {combatCharacters.map((character, index) => (
             <tr
               key={index}
               onClick={() => handleCharacterClick(character)}
-              // className={index === currentCharacterIndex ? "bg-gray-200" : ""}
+              className={character.active ? "bg-gray-200" : ""}
             >
               <td className="border p-2">
-                {index === currentCharacterIndex && <CheckmarkIconPositive />}
+                {character.active && <CheckmarkIconPositive />}
               </td>
               <td className="border p-2">{character.name}</td>
               <td className="border p-2">{character.initiative}</td>
@@ -195,15 +196,15 @@ const CombatTracker: React.FC = () => {
       <div className="flex p-2">
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded-full mb-4 mr-4"
-          onClick={() => handleMoveCharacter(DIRECTION_UP)}
+          onClick={() => handleMoveActiveCharacter(DIRECTION_UP)}
         >
-          Move Up
+          {strings.moveUpLabel}
         </button>
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded-full mb-4"
-          onClick={() => handleMoveCharacter(DIRECTION_DOWN)}
+          onClick={() => handleMoveActiveCharacter(DIRECTION_DOWN)}
         >
-          Move Down
+          {strings.moveDownLabel}
         </button>
       </div>
     </div>

@@ -4,8 +4,10 @@ import "@testing-library/jest-dom";
 import React from "react";
 import strings from "../../strings";
 import {
-  mockBadCharacterFile,
-  mockCharacterFile,
+  mockBadmockSingleCharacterFile_warrior,
+  mockSingleCharacterMageFile,
+  mockSingleCharacterWarrior,
+  mockSingleCharacterWarriorFile,
 } from "../lib/definitionMocks";
 import { promptForFile } from "../lib/fileInput";
 import { InitiativeInputDialogProps } from "./InitiativeInputDialog";
@@ -19,21 +21,18 @@ jest.mock("../lib/fileInput", () => ({
   promptForFile: jest.fn(),
 }));
 
-jest.mock(
-  "./InitiativeInputDialog",
-  () => {
-    const MockInitiativeInputDialog = (props: InitiativeInputDialogProps) => {
-      handleCancelHook = props.onCancel;
-      handleConfirmHook = props.onConfirm;
-      addedCharacter = props.character;
-      return <div>Mock InitiativeInputDialog</div>;
-    };
+jest.mock("./InitiativeInputDialog", () => {
+  const MockInitiativeInputDialog = (props: InitiativeInputDialogProps) => {
+    handleCancelHook = props.onCancel;
+    handleConfirmHook = props.onConfirm;
+    addedCharacter = props.character;
+    return <div>Mock InitiativeInputDialog</div>;
+  };
 
-    MockInitiativeInputDialog.displayName = 'MockInitiativeInputDialog';
+  MockInitiativeInputDialog.displayName = "MockInitiativeInputDialog";
 
-    return MockInitiativeInputDialog;
-  },
-);
+  return MockInitiativeInputDialog;
+});
 
 describe("CombatTracker", () => {
   it("renders component initial ui", () => {
@@ -61,6 +60,7 @@ describe("CombatTracker", () => {
     expect(getByText(strings.descendingLabel)).toBeInTheDocument();
   });
 
+  // This test is not working as expected
   // it("handles null file input", async () => {
   //   const { getByText } = render(<CombatTracker />);
   //   (
@@ -85,7 +85,7 @@ describe("CombatTracker", () => {
     const { getByText } = render(<CombatTracker />);
     (
       promptForFile as jest.MockedFunction<typeof promptForFile>
-    ).mockResolvedValue(mockBadCharacterFile);
+    ).mockResolvedValue(mockBadmockSingleCharacterFile_warrior);
 
     fireEvent.click(getByText(strings.addToCombatButton));
 
@@ -101,7 +101,7 @@ describe("CombatTracker", () => {
     const { getByText } = render(<CombatTracker />);
     (
       promptForFile as jest.MockedFunction<typeof promptForFile>
-    ).mockResolvedValue(mockCharacterFile);
+    ).mockResolvedValue(mockSingleCharacterWarriorFile);
 
     fireEvent.click(getByText(strings.addToCombatButton));
 
@@ -118,21 +118,37 @@ describe("CombatTracker", () => {
     expect(getByText(addedCharacter.initiative.toString())).toBeInTheDocument();
   });
 
-  it("confirms adding a character correctly", () => {
+  it("moves current active character down correctly", async () => {
     const { getByText } = render(<CombatTracker />);
+    const moveDownButton = getByText(strings.moveDownLabel);
+    const mockCharacterFiles = [
+      mockSingleCharacterWarriorFile,
+      mockSingleCharacterWarriorFile,
+    ];
+    const mockCharacters = [
+      mockSingleCharacterWarrior,
+      mockSingleCharacterWarrior,
+    ];
 
-    // TODO: Mock the file input and FileReader to test confirming a character
-  });
+    for (let i = 0; i < mockCharacters.length; i++) {
+      (
+        promptForFile as jest.MockedFunction<typeof promptForFile>
+      ).mockResolvedValue(mockCharacterFiles[i]);
 
-  it("cancels adding a character correctly", () => {
-    const { getByText } = render(<CombatTracker />);
+      fireEvent.click(getByText(strings.addToCombatButton));
 
-    // TODO: Mock the file input and FileReader to test canceling a character
-  });
-
-  it("moves a character up and down correctly", () => {
-    const { getByText } = render(<CombatTracker />);
-
-    // TODO: Mock the file input and FileReader to test moving a character
+      // Wait for promises to resolve
+      new Promise((resolve) => setTimeout(resolve, 0));
+      await waitFor(() =>
+        expect(getByText("Mock InitiativeInputDialog")).toBeInTheDocument(),
+      );
+      handleConfirmHook(addedCharacter);
+      await waitFor(() =>
+        expect(getByText(addedCharacter.name)).toBeInTheDocument(),
+      );
+      expect(
+        getByText(addedCharacter.initiative.toString()),
+      ).toBeInTheDocument();
+    }
   });
 });

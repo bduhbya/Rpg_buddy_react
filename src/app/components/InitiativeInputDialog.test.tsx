@@ -1,6 +1,6 @@
 import { render, fireEvent } from "@testing-library/react";
 import InitiativeInputDialog from "./InitiativeInputDialog";
-import { mockCharacter } from "../lib/definitionMocks";
+import { mockSingleCharacterWarrior } from "../lib/definitionMocks";
 import { DEFAULT_INITIATIVE } from "./InitiativeInputDialog";
 import "@testing-library/jest-dom";
 import React from "react";
@@ -13,7 +13,7 @@ describe("InitiativeInputDialog", () => {
   it("renders correctly", () => {
     const { getByText, getByLabelText } = render(
       <InitiativeInputDialog
-        character={mockCharacter}
+        character={mockSingleCharacterWarrior}
         onConfirm={mockOnConfirm}
         onCancel={mockOnCancel}
         duplicateEntryOrEmpty={false}
@@ -22,7 +22,7 @@ describe("InitiativeInputDialog", () => {
 
     expect(getByText(strings.initiativePrompt)).toBeInTheDocument();
     expect(getByLabelText(strings.characterLabel)).toHaveValue(
-      mockCharacter.name,
+      mockSingleCharacterWarrior.name,
     );
     expect(getByLabelText(strings.initiativeLabel)).toHaveValue(
       DEFAULT_INITIATIVE,
@@ -32,7 +32,7 @@ describe("InitiativeInputDialog", () => {
   it("changes input values correctly", () => {
     const { getByLabelText } = render(
       <InitiativeInputDialog
-        character={mockCharacter}
+        character={mockSingleCharacterWarrior}
         onConfirm={mockOnConfirm}
         onCancel={mockOnCancel}
         duplicateEntryOrEmpty={false}
@@ -53,7 +53,7 @@ describe("InitiativeInputDialog", () => {
   it("prevents non-numeric initiative input", () => {
     const { getByLabelText } = render(
       <InitiativeInputDialog
-        character={mockCharacter}
+        character={mockSingleCharacterWarrior}
         onConfirm={mockOnConfirm}
         onCancel={mockOnCancel}
         duplicateEntryOrEmpty={false}
@@ -74,7 +74,7 @@ describe("InitiativeInputDialog", () => {
   it("calls onConfirm and onCancel correctly", () => {
     const { getByText } = render(
       <InitiativeInputDialog
-        character={mockCharacter}
+        character={mockSingleCharacterWarrior}
         onConfirm={mockOnConfirm}
         onCancel={mockOnCancel}
         duplicateEntryOrEmpty={false}

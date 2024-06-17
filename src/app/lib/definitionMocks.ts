@@ -2,13 +2,27 @@ import { Character } from "./definitions";
 import path from "path";
 import fs from "fs";
 
-const mockCharacterDataPath = path.join(
+const mockSingleCharacterWarriorDataPath = path.join(
   __dirname,
   "..",
   "testData",
   "character_data.json",
 );
-const mockCharacterData = fs.readFileSync(mockCharacterDataPath, "utf8");
+const mockSingleCharacterWarriorData = fs.readFileSync(
+  mockSingleCharacterWarriorDataPath,
+  "utf8",
+);
+
+const mockSingleCharacterMageDataPath = path.join(
+  __dirname,
+  "..",
+  "testData",
+  "character_data_mage.json",
+);
+const mockSingleCharacterMageData = fs.readFileSync(
+  mockSingleCharacterMageDataPath,
+  "utf8",
+);
 
 const mockBadCharacterDataPath = path.join(
   __dirname,
@@ -18,19 +32,42 @@ const mockBadCharacterDataPath = path.join(
 );
 const mockBadCharacterData = fs.readFileSync(mockBadCharacterDataPath, "utf8");
 
-const mockCharacterDataParsed = JSON.parse(mockCharacterData);
-const characterFile = new File([mockCharacterData], mockCharacterDataPath);
+const mockSingleCharacterWarriorDataParsed = JSON.parse(
+  mockSingleCharacterWarriorData,
+);
+const mockSingleCharacterMageDataParsed = JSON.parse(
+  mockSingleCharacterMageData,
+);
 
-export const mockBadCharacterFile = new File(
+const mockSingleCharacterFile_warrior = new File(
+  [mockSingleCharacterWarriorData],
+  mockSingleCharacterWarriorDataPath,
+);
+const mockSingleCharacterFile_mage = new File(
+  [mockSingleCharacterMageData],
+  mockSingleCharacterMageDataPath,
+);
+
+export const mockBadmockSingleCharacterFile_warrior = new File(
   [mockBadCharacterData],
   mockBadCharacterDataPath,
 );
 
-export const mockCharacter: Character = {
-  name: mockCharacterDataParsed.name,
+export const mockSingleCharacterWarrior: Character = {
+  name: mockSingleCharacterWarriorDataParsed.name,
   initiative: 0,
-  fileReference: characterFile,
-  dynamicData: mockCharacterDataParsed,
+  fileReference: mockSingleCharacterFile_warrior,
+  dynamicData: mockSingleCharacterWarriorDataParsed,
+  active: false,
 };
 
-export const mockCharacterFile = characterFile;
+export const mockSingleCharacterMage: Character = {
+  name: mockSingleCharacterMageDataParsed.name,
+  initiative: 0,
+  fileReference: mockSingleCharacterFile_mage,
+  dynamicData: mockSingleCharacterMageDataParsed,
+  active: false,
+};
+
+export const mockSingleCharacterWarriorFile = mockSingleCharacterFile_warrior;
+export const mockSingleCharacterMageFile = mockSingleCharacterFile_mage;
