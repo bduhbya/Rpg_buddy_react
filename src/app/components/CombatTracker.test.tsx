@@ -145,6 +145,37 @@ describe("CombatTracker", () => {
     }
   });
 
+  it("moves current active character up correctly", async () => {
+    const { getByText, queryAllByText, getByTestId } = render(
+      <CombatTracker />,
+    );
+    const moveUpButton = getByText(strings.moveUpLabel);
+    const mockCharacterFiles = [
+      mockSingleCharacterWarriorFile,
+      mockSingleCharacterWarriorFile,
+    ];
+    // The expected active character index after each activation of the move down button
+    const expectedActiveCharacterIndex = [0, 1, 0];
+
+    for (let i = 0; i < mockCharacterFiles.length; i++) {
+      const expectedCharacterCount = i + 1;
+      await addCharacterAndCheck(
+        mockCharacterFiles[i],
+        expectedCharacterCount,
+        getByText,
+        queryAllByText,
+      );
+    }
+
+    for (let i = 0; i < expectedActiveCharacterIndex.length; i++) {
+      await checkActiveCharacterIndex(
+        expectedActiveCharacterIndex[i],
+        getByTestId,
+      );
+      act(() => fireEvent.click(moveUpButton)); // Move the active character down
+    }
+  });
+
   // Helper functions
 
   async function checkActiveCharacterIndex(
