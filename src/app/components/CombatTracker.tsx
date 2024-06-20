@@ -7,6 +7,8 @@ import strings from "@/strings";
 import { promptForFile } from "../lib/fileInput";
 import { BasicDialog, DialogData, DialogType } from "./BasicDialog";
 
+export const activeCharacterTestId = "active-combat-character-row-";
+
 const CombatTracker: React.FC = () => {
   const DIRECTION_UP = "up";
   const DIRECTION_DOWN = "down";
@@ -182,6 +184,7 @@ const CombatTracker: React.FC = () => {
               key={index}
               onClick={() => handleCharacterClick(character)}
               className={character.active ? "bg-gray-200" : ""}
+              data-testid={character.active ? `${activeCharacterTestId}${index}` : ""}
             >
               <td className="border p-2">
                 {character.active && <CheckmarkIconPositive />}
