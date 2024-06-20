@@ -123,6 +123,8 @@ describe("CombatTracker", () => {
       mockSingleCharacterWarriorFile,
       mockSingleCharacterWarriorFile,
     ];
+    // The expected active character index after each activation of the move down button
+    const expectedActiveCharacterIndex = [0, 1, 0];
 
     for (let i = 0; i < mockCharacterFiles.length; i++) {
       const expectedCharacterCount = i + 1;
@@ -134,16 +136,27 @@ describe("CombatTracker", () => {
       );
     }
 
-    var activeCharacterRow = getByTestId(`${activeCharacterTestId}0`);
-    expect(activeCharacterRow).not.toBeNull();
-    act(() => fireEvent.click(moveDownButton)); // Move the active character down
-    await waitFor(() => {
-      activeCharacterRow = getByTestId(`${activeCharacterTestId}1`);
-      expect(activeCharacterRow).not.toBeNull();
-    });
+    for (let i = 0; i < expectedActiveCharacterIndex.length; i++) {
+      await checkActiveCharacterIndex(
+        expectedActiveCharacterIndex[i],
+        getByTestId,
+      );
+      act(() => fireEvent.click(moveDownButton)); // Move the active character down
+    }
   });
 
   // Helper functions
+
+  async function checkActiveCharacterIndex(
+    expectedActiveCharacterIndex: number,
+    getByTestId: Function,
+  ) {
+    const activeCharacterRowString = `${activeCharacterTestId}${expectedActiveCharacterIndex}`;
+    await waitFor(() => {
+      const activeCharacterRow = getByTestId(activeCharacterRowString);
+      expect(activeCharacterRow).not.toBeNull();
+    });
+  }
 
   async function addCharacterAndCheck(
     characterFile: File,
