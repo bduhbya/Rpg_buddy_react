@@ -1,4 +1,11 @@
-import { render, fireEvent, act, waitFor, queryAllByText, getByTestId } from "@testing-library/react";
+import {
+  render,
+  fireEvent,
+  act,
+  waitFor,
+  queryAllByText,
+  getByTestId,
+} from "@testing-library/react";
 import CombatTracker, { activeCharacterTestId } from "./CombatTracker";
 import "@testing-library/jest-dom";
 import React from "react";
@@ -119,7 +126,9 @@ describe("CombatTracker", () => {
   });
 
   it("moves current active character down correctly", async () => {
-    const { getByText, queryAllByText, getByTestId } = render(<CombatTracker />);
+    const { getByText, queryAllByText, getByTestId } = render(
+      <CombatTracker />,
+    );
     const moveDownButton = getByText(strings.moveDownLabel);
     const mockCharacterFiles = [
       mockSingleCharacterWarriorFile,
@@ -140,17 +149,19 @@ describe("CombatTracker", () => {
         expect(getByText("Mock InitiativeInputDialog")).toBeInTheDocument(),
       );
       act(() => handleConfirmHook(addedCharacter));
-      await waitFor(() =>{
+      await waitFor(() => {
         const characterElements = queryAllByText(addedCharacter.name);
         expect(characterElements.length === expectedCharacterCount);
       });
-      const initiativeElements = queryAllByText(addedCharacter.initiative.toString());
+      const initiativeElements = queryAllByText(
+        addedCharacter.initiative.toString(),
+      );
       expect(initiativeElements.length === expectedCharacterCount);
     }
 
     var activeCharacterRow = getByTestId(`${activeCharacterTestId}0`);
     expect(activeCharacterRow).not.toBeNull();
-    act (() => fireEvent.click(moveDownButton));  // Move the active character down
+    act(() => fireEvent.click(moveDownButton)); // Move the active character down
     await waitFor(() => {
       activeCharacterRow = getByTestId(`${activeCharacterTestId}1`);
       expect(activeCharacterRow).not.toBeNull();

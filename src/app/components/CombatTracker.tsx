@@ -184,7 +184,9 @@ const CombatTracker: React.FC = () => {
               key={index}
               onClick={() => handleCharacterClick(character)}
               className={character.active ? "bg-gray-200" : ""}
-              data-testid={character.active ? `${activeCharacterTestId}${index}` : ""}
+              data-testid={
+                character.active ? `${activeCharacterTestId}${index}` : ""
+              }
             >
               <td className="border p-2">
                 {character.active && <CheckmarkIconPositive />}
