@@ -105,24 +105,13 @@ describe("CombatTracker", () => {
   });
 
   it("inserts character", async () => {
-    const { getByText } = render(<CombatTracker />);
-    (
-      promptForFile as jest.MockedFunction<typeof promptForFile>
-    ).mockResolvedValue(mockSingleCharacterWarriorFile);
-
-    fireEvent.click(getByText(strings.addToCombatButton));
-
-    // Wait for promises to resolve
-    await new Promise((resolve) => setTimeout(resolve, 0));
-
-    await waitFor(() =>
-      expect(getByText("Mock InitiativeInputDialog")).toBeInTheDocument(),
+    const { getByText, queryAllByText } = render(<CombatTracker />);
+    await addCharacterAndCheck(
+      mockSingleCharacterWarriorFile,
+      1,
+      getByText,
+      queryAllByText,
     );
-    handleConfirmHook(addedCharacter);
-    await waitFor(() =>
-      expect(getByText(addedCharacter.name)).toBeInTheDocument(),
-    );
-    expect(getByText(addedCharacter.initiative.toString())).toBeInTheDocument();
   });
 
   it("moves current active character down correctly", async () => {
@@ -136,27 +125,13 @@ describe("CombatTracker", () => {
     ];
 
     for (let i = 0; i < mockCharacterFiles.length; i++) {
-      (
-        promptForFile as jest.MockedFunction<typeof promptForFile>
-      ).mockResolvedValue(mockCharacterFiles[i]);
-
       const expectedCharacterCount = i + 1;
-      fireEvent.click(getByText(strings.addToCombatButton));
-
-      // Wait for promises to resolve
-      new Promise((resolve) => setTimeout(resolve, 0));
-      await waitFor(() =>
-        expect(getByText("Mock InitiativeInputDialog")).toBeInTheDocument(),
+      await addCharacterAndCheck(
+        mockCharacterFiles[i],
+        expectedCharacterCount,
+        getByText,
+        queryAllByText,
       );
-      act(() => handleConfirmHook(addedCharacter));
-      await waitFor(() => {
-        const characterElements = queryAllByText(addedCharacter.name);
-        expect(characterElements.length === expectedCharacterCount);
-      });
-      const initiativeElements = queryAllByText(
-        addedCharacter.initiative.toString(),
-      );
-      expect(initiativeElements.length === expectedCharacterCount);
     }
 
     var activeCharacterRow = getByTestId(`${activeCharacterTestId}0`);
@@ -167,4 +142,34 @@ describe("CombatTracker", () => {
       expect(activeCharacterRow).not.toBeNull();
     });
   });
+
+  // Helper functions
+
+  async function addCharacterAndCheck(
+    characterFile: File,
+    expectedCharacterCount: number,
+    getByText: Function,
+    queryAllByText: Function,
+  ) {
+    (
+      promptForFile as jest.MockedFunction<typeof promptForFile>
+    ).mockResolvedValue(characterFile);
+
+    fireEvent.click(getByText(strings.addToCombatButton));
+
+    // Wait for promises to resolve
+    new Promise((resolve) => setTimeout(resolve, 0));
+    await waitFor(() =>
+      expect(getByText("Mock InitiativeInputDialog")).toBeInTheDocument(),
+    );
+    act(() => handleConfirmHook(addedCharacter));
+    await waitFor(() => {
+      const characterElements = queryAllByText(addedCharacter.name);
+      expect(characterElements.length === expectedCharacterCount);
+    });
+    const initiativeElements = queryAllByText(
+      addedCharacter.initiative.toString(),
+    );
+    expect(initiativeElements.length === expectedCharacterCount);
+  }
 });
