@@ -172,10 +172,30 @@ describe("CombatTracker", () => {
         expectedActiveCharacterIndex[i],
         getByTestId,
       );
-      act(() => fireEvent.click(moveUpButton)); // Move the active character down
+      act(() => fireEvent.click(moveUpButton)); // Move the active character up
     }
   });
 
+  it("handles duplicate character name", async () => {
+    const { getByText, queryAllByText } = render(<CombatTracker />);
+    await addCharacterAndCheck(
+      mockSingleCharacterWarriorFile,
+      1,
+      getByText,
+      queryAllByText,
+    );
+
+    await addCharacterAndCheck(
+      mockSingleCharacterWarriorFile,
+      2,
+      getByText,
+      queryAllByText,
+    );
+  });
+
+  // TODO: add test for removing character
+  // TODO: add test for editing character
+  // TODO: add test for selecting character
   // Helper functions
 
   async function checkActiveCharacterIndex(
