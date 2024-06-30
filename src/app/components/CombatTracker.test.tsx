@@ -12,8 +12,6 @@ import React from "react";
 import strings from "../../strings";
 import {
   mockBadmockSingleCharacterFile_warrior,
-  mockSingleCharacterMageFile,
-  mockSingleCharacterWarrior,
   mockSingleCharacterWarriorFile,
 } from "../lib/definitionMocks";
 import { promptForFile } from "../lib/fileInput";
@@ -57,7 +55,7 @@ describe("CombatTracker", () => {
   });
 
   // TODO: add tests for sorting to check active character is preserved
-  it("toggles sort order correctly", () => {
+  it("toggles sort order label correctly", () => {
     const { getByText } = render(<CombatTracker />);
 
     fireEvent.click(getByText(strings.descendingLabel));
@@ -154,7 +152,7 @@ describe("CombatTracker", () => {
       mockSingleCharacterWarriorFile,
       mockSingleCharacterWarriorFile,
     ];
-    // The expected active character index after each activation of the move down button
+    // The expected active character index after each activation of the move up button
     const expectedActiveCharacterIndex = [0, 1, 0];
 
     for (let i = 0; i < mockCharacterFiles.length; i++) {
