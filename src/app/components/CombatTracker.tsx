@@ -3,68 +3,72 @@ import React, { useState } from "react";
 import { Character } from "../lib/definitions";
 import InitiativeInputDialog from "./InitiativeInputDialog";
 import { CheckmarkIconPositive } from "../lib/SVGIcons";
+import strings from "@/strings";
+import { promptForFile } from "../lib/fileInput";
+import { BasicDialog, DialogData, DialogType } from "./BasicDialog";
+
+export const activeCharacterTestId = "active-combat-character-row-";
 
 const CombatTracker: React.FC = () => {
+  const DIRECTION_UP = "up";
+  const DIRECTION_DOWN = "down";
+  type Direction = typeof DIRECTION_UP | typeof DIRECTION_DOWN;
+
   const [combatCharacters, setCombatCharacters] = useState<Character[]>([]);
   const [sortDescending, toggleSortDescending] = useState(true);
-  const [currentCharacterIndex, setCurrentCharacterIndex] = useState<number>(0);
-  const toggleButtonText = sortDescending ? "Descending" : "Ascending";
+  const toggleButtonText = sortDescending
+    ? strings.descendingLabel
+    : strings.ascendingLabel;
   const [pendingCharacter, setPendingCharacter] = useState<Character | null>(
+    null,
+  );
+  const [currentDialogData, setCurrentDialogData] = useState<DialogData | null>(
     null,
   );
 
   const handleToggleSortDescending = () => {
     // Toggle the sort order
     toggleSortDescending(!sortDescending);
-
-    // Update the selected character index based on the new order
-    // When the ascending or descending order is toggled, the current
-    // index should now be the same distance from the top of the array
-    // as it was from the bottom of the array before toggling
-    const newIndex = combatCharacters.length - currentCharacterIndex - 1;
-
-    setCurrentCharacterIndex(newIndex);
   };
 
-  const handleAddToCombat = () => {
-    // TODO: create utility
-    // Prompt for opening a character file
-    const input = document.createElement("input");
-    input.type = "file";
+  const handleAddToCombat = async () => {
+    const file = await promptForFile();
 
-    input.addEventListener("change", (event) => {
-      const fileInput = event.target as HTMLInputElement;
-      const files = fileInput.files;
+    if (file) {
+      const reader = new FileReader();
 
-      if (files && files.length > 0) {
-        const file = files[0];
+      reader.onload = () => {
+        try {
+          const jsonData = JSON.parse(reader.result as string);
 
-        const reader = new FileReader();
+          setPendingCharacter({
+            name: jsonData.name || "UNKNOWN",
+            fileReference: file,
+            dynamicData: jsonData,
+            initiative: 0,
+            active: false,
+          });
+        } catch (error) {
+          setCurrentDialogData(
+            new DialogData(strings.fileParsingError, DialogType.WARNING),
+          );
+          console.error("Error parsing JSON file:", error);
+        }
+      };
 
-        reader.onload = () => {
-          try {
-            // Save the file contents in pendingCharacter
-            const jsonData = JSON.parse(reader.result as string);
-
-            setPendingCharacter({
-              name: jsonData.name || "UNKNOWN",
-              fileReference: file,
-              dynamicData: jsonData,
-              initiative: 0,
-            });
-          } catch (error) {
-            console.error("Error parsing JSON file:", error);
-          }
-        };
-
-        reader.readAsText(file);
-      }
-    });
-
-    input.click();
+      reader.readAsText(file);
+    } else {
+      setCurrentDialogData(
+        new DialogData(strings.fileNotSelected, DialogType.WARNING),
+      );
+      console.log("No file selected");
+    }
   };
 
   const handleConfirmAddCharacter = (newCharacter: Character) => {
+    if (combatCharacters.length === 0) {
+      newCharacter.active = true;
+    }
     // Add the character to combatCharacters
     setCombatCharacters([...combatCharacters, newCharacter]);
 
@@ -101,14 +105,21 @@ const CombatTracker: React.FC = () => {
     window.alert(JSON.stringify(character.dynamicData, null, 2));
   };
 
-  const handleMoveCharacter = (direction: "up" | "down") => {
+  const handleMoveActiveCharacter = (direction: Direction) => {
+    var currentCharacterIndex = combatCharacters.findIndex(
+      (char) => char.active,
+    );
     const newIndex =
-      direction === "up"
+      direction === DIRECTION_UP
         ? (currentCharacterIndex - 1 + combatCharacters.length) %
           combatCharacters.length
         : (currentCharacterIndex + 1) % combatCharacters.length;
 
-    setCurrentCharacterIndex(newIndex);
+    // Update the active character
+    const newCombatCharacters = [...combatCharacters];
+    newCombatCharacters[currentCharacterIndex].active = false;
+    newCombatCharacters[newIndex].active = true;
+    setCombatCharacters(newCombatCharacters);
   };
 
   // Check for duplicate names
@@ -131,7 +142,7 @@ const CombatTracker: React.FC = () => {
           className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded-full mb-4 mr-4"
           onClick={handleAddToCombat}
         >
-          Add Character to Combat
+          {strings.addToCombatButton}
         </button>
         <button
           className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded-full mb-4"
@@ -140,6 +151,13 @@ const CombatTracker: React.FC = () => {
           {toggleButtonText}
         </button>
       </div>
+      {/* Render the basic dialog */}
+      {currentDialogData && (
+        <BasicDialog
+          dialogData={currentDialogData}
+          onConfirm={() => setCurrentDialogData(null)}
+        />
+      )}
       {/* Render the custom initiative input dialog */}
       {pendingCharacter && (
         <InitiativeInputDialog
@@ -153,21 +171,25 @@ const CombatTracker: React.FC = () => {
         <thead>
           <tr>
             {/* New column for tracking the current character */}
-            <th className="border p-2">Current</th>
-            <th className="border p-2">Character</th>
-            <th className="border p-2">Initiative</th>
+            <th className="border p-2">
+              {strings.currentCharacterColumnLabel}
+            </th>
+            <th className="border p-2">{strings.characterNameColumnLabel}</th>
+            <th className="border p-2">{strings.initiativeColumnLabel}</th>
           </tr>
         </thead>
         <tbody>
-          {/* Render rows based on combatCharacters */}
           {combatCharacters.map((character, index) => (
             <tr
               key={index}
               onClick={() => handleCharacterClick(character)}
-              // className={index === currentCharacterIndex ? "bg-gray-200" : ""}
+              className={character.active ? "bg-gray-200" : ""}
+              data-testid={
+                character.active ? `${activeCharacterTestId}${index}` : ""
+              }
             >
               <td className="border p-2">
-                {index === currentCharacterIndex && <CheckmarkIconPositive />}
+                {character.active && <CheckmarkIconPositive />}
               </td>
               <td className="border p-2">{character.name}</td>
               <td className="border p-2">{character.initiative}</td>
@@ -179,15 +201,15 @@ const CombatTracker: React.FC = () => {
       <div className="flex p-2">
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded-full mb-4 mr-4"
-          onClick={() => handleMoveCharacter("up")}
+          onClick={() => handleMoveActiveCharacter(DIRECTION_UP)}
         >
-          Move Up
+          {strings.moveUpLabel}
         </button>
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded-full mb-4"
-          onClick={() => handleMoveCharacter("down")}
+          onClick={() => handleMoveActiveCharacter(DIRECTION_DOWN)}
         >
-          Move Down
+          {strings.moveDownLabel}
         </button>
       </div>
     </div>

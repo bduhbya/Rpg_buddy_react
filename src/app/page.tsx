@@ -3,6 +3,7 @@ import Image from "next/image";
 import CombatTracker from "./components/CombatTracker";
 
 export default function Home() {
+  // TODO: add round tracker and eslapsed real time
   return (
     <main className="flex min-h-screen flex-col items-left justify-between p-24">
       {/* <div

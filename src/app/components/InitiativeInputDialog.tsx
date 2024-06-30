@@ -1,8 +1,9 @@
 // components/InitiativeInputDialog.tsx
 import React, { useState } from "react";
 import { Character } from "../lib/definitions";
+import strings from "@/strings";
 
-type InitiativeInputDialogProps = {
+export type InitiativeInputDialogProps = {
   character: Character;
   onConfirm: (newCharacter: Character) => void;
   onCancel: () => void;
@@ -35,15 +36,15 @@ const InitiativeInputDialog: React.FC<InitiativeInputDialogProps> = ({
       <div className="bg-opacity-50 bg-gray-800 w-full h-full fixed"></div>
       <div className="modal bg-white p-8 rounded-lg z-10">
         <h2 className="text-2xl font-bold mb-4 text-black">
-          {"Enter Initiative"}
+          {strings.initiativePrompt}
         </h2>
         {duplicateEntryOrEmpty && (
           <p className="mb-4 text-black">
-            This character is already in the Combat list.
+            {strings.characterAlreadyPresentWarning}
           </p>
         )}
         <label className="block mb-4">
-          Character Name:
+          {strings.characterLabel}
           <input
             type="string"
             className="w-full border rounded p-2 appearance-none focus:outline-none focus:border-blue-500 text-black"
@@ -52,12 +53,17 @@ const InitiativeInputDialog: React.FC<InitiativeInputDialogProps> = ({
           />
         </label>
         <label className="block mb-4">
-          Initiative:
+          {strings.initiativeLabel}
           <input
             type="number"
             className="w-full border rounded p-2 appearance-none focus:outline-none focus:border-blue-500 text-black"
             value={initiative}
-            onChange={(e) => setInitiative(parseInt(e.target.value, 10))}
+            onChange={(e) => {
+              const value = parseInt(e.target.value, 10);
+              if (!isNaN(value)) {
+                setInitiative(value);
+              }
+            }}
           />
         </label>
         <div className="flex space-x-4">
@@ -65,13 +71,13 @@ const InitiativeInputDialog: React.FC<InitiativeInputDialogProps> = ({
             className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full"
             onClick={handleConfirm}
           >
-            {"Add Character"}
+            {strings.addCharacterButton}
           </button>
           <button
             className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full"
             onClick={handleCancel}
           >
-            Cancel
+            {strings.cancelString}
           </button>
         </div>
       </div>

@@ -1,64 +1,90 @@
 import { render, fireEvent } from "@testing-library/react";
 import InitiativeInputDialog from "./InitiativeInputDialog";
-import { mockCharacter } from "../lib/definitionMocks";
+import { mockSingleCharacterWarrior } from "../lib/definitionMocks";
 import { DEFAULT_INITIATIVE } from "./InitiativeInputDialog";
 import "@testing-library/jest-dom";
+import React from "react";
+import strings from "@/strings";
 
 describe("InitiativeInputDialog", () => {
   const mockOnConfirm = jest.fn();
   const mockOnCancel = jest.fn();
-  // const mockCharacter = { name: 'Test', initiative: 0 };
 
   it("renders correctly", () => {
     const { getByText, getByLabelText } = render(
       <InitiativeInputDialog
-        character={mockCharacter}
+        character={mockSingleCharacterWarrior}
         onConfirm={mockOnConfirm}
         onCancel={mockOnCancel}
         duplicateEntryOrEmpty={false}
       />,
     );
 
-    expect(getByText("Enter Initiative")).toBeInTheDocument();
-    expect(getByLabelText("Character Name:")).toHaveValue(mockCharacter.name);
-    expect(getByLabelText("Initiative:")).toHaveValue(DEFAULT_INITIATIVE);
+    expect(getByText(strings.initiativePrompt)).toBeInTheDocument();
+    expect(getByLabelText(strings.characterLabel)).toHaveValue(
+      mockSingleCharacterWarrior.name,
+    );
+    expect(getByLabelText(strings.initiativeLabel)).toHaveValue(
+      DEFAULT_INITIATIVE,
+    );
   });
 
   it("changes input values correctly", () => {
     const { getByLabelText } = render(
       <InitiativeInputDialog
-        character={mockCharacter}
+        character={mockSingleCharacterWarrior}
         onConfirm={mockOnConfirm}
         onCancel={mockOnCancel}
         duplicateEntryOrEmpty={false}
       />,
     );
 
-    fireEvent.change(getByLabelText("Character Name:"), {
+    fireEvent.change(getByLabelText(strings.characterLabel), {
       target: { value: "New Name" },
     });
-    fireEvent.change(getByLabelText("Initiative:"), {
+    fireEvent.change(getByLabelText(strings.initiativeLabel), {
       target: { value: "10" },
     });
 
-    expect(getByLabelText("Character Name:")).toHaveValue("New Name");
-    expect(getByLabelText("Initiative:")).toHaveValue(10);
+    expect(getByLabelText(strings.characterLabel)).toHaveValue("New Name");
+    expect(getByLabelText(strings.initiativeLabel)).toHaveValue(10);
+  });
+
+  it("prevents non-numeric initiative input", () => {
+    const { getByLabelText } = render(
+      <InitiativeInputDialog
+        character={mockSingleCharacterWarrior}
+        onConfirm={mockOnConfirm}
+        onCancel={mockOnCancel}
+        duplicateEntryOrEmpty={false}
+      />,
+    );
+
+    // Try to change the initiative to a non-numeric value
+    fireEvent.change(getByLabelText(strings.initiativeLabel), {
+      target: { value: "not a number" },
+    });
+
+    // Check that the initiative value has not changed
+    expect(getByLabelText(strings.initiativeLabel)).toHaveValue(
+      DEFAULT_INITIATIVE,
+    );
   });
 
   it("calls onConfirm and onCancel correctly", () => {
     const { getByText } = render(
       <InitiativeInputDialog
-        character={mockCharacter}
+        character={mockSingleCharacterWarrior}
         onConfirm={mockOnConfirm}
         onCancel={mockOnCancel}
         duplicateEntryOrEmpty={false}
       />,
     );
 
-    fireEvent.click(getByText("Add Character"));
+    fireEvent.click(getByText(strings.addCharacterButton));
     expect(mockOnConfirm).toHaveBeenCalled();
 
-    fireEvent.click(getByText("Cancel"));
+    fireEvent.click(getByText(strings.cancelString));
     expect(mockOnCancel).toHaveBeenCalled();
   });
 });
