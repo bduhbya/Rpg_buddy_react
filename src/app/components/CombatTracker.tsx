@@ -9,7 +9,11 @@ import { BasicDialog, DialogData, DialogType } from "./BasicDialog";
 
 export const activeCharacterTestId = "active-combat-character-row-";
 
-const CombatTracker: React.FC = () => {
+export interface CombatTrackerProps {
+  SetCharacterFile: (file: File) => void;
+}
+
+const CombatTracker: React.FC<CombatTrackerProps> = ({SetCharacterFile}) => {
   const DIRECTION_UP = "up";
   const DIRECTION_DOWN = "down";
   type Direction = typeof DIRECTION_UP | typeof DIRECTION_DOWN;
@@ -81,7 +85,8 @@ const CombatTracker: React.FC = () => {
     setPendingCharacter(null);
   };
 
-  const handleCharacterClick = (character: Character) => {
+  const handleCharacterClick = (character: Character, SetCharacterFile: (file: File) => void) => {
+    SetCharacterFile(character.fileReference);
     // TODO: activate a callback to set the character display in parent
     const dynamicDataKeys = Object.keys(character.dynamicData);
 
@@ -182,7 +187,7 @@ const CombatTracker: React.FC = () => {
           {combatCharacters.map((character, index) => (
             <tr
               key={index}
-              onClick={() => handleCharacterClick(character)}
+              onClick={() => handleCharacterClick(character, SetCharacterFile)}
               className={character.active ? "bg-gray-200" : ""}
               data-testid={
                 character.active ? `${activeCharacterTestId}${index}` : ""
