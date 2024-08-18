@@ -69,9 +69,10 @@ const CombatTracker: React.FC<CombatTrackerProps> = ({SetCharacterFile}) => {
     }
   };
 
-  const handleConfirmAddCharacter = (newCharacter: Character) => {
+  const handleConfirmAddCharacter = (newCharacter: Character, SetCharacterFile: (file: File) => void) => {
     if (combatCharacters.length === 0) {
       newCharacter.active = true;
+      SetCharacterFile(newCharacter.fileReference);
     }
     // Add the character to combatCharacters
     setCombatCharacters([...combatCharacters, newCharacter]);
@@ -107,7 +108,6 @@ const CombatTracker: React.FC<CombatTrackerProps> = ({SetCharacterFile}) => {
     );
 
     // Using window.alert for simplicity, consider using a modal library for a better user experience
-    window.alert(JSON.stringify(character.dynamicData, null, 2));
   };
 
   const handleMoveActiveCharacter = (direction: Direction) => {
@@ -170,6 +170,7 @@ const CombatTracker: React.FC<CombatTrackerProps> = ({SetCharacterFile}) => {
           onConfirm={handleConfirmAddCharacter}
           onCancel={handleCancelAddCharacter}
           duplicateEntryOrEmpty={isDuplicateOrEmpty}
+          SetCharacterFile={SetCharacterFile}
         />
       )}
       <table className="border-collapse border">
