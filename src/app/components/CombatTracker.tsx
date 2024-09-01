@@ -86,28 +86,18 @@ const CombatTracker: React.FC<CombatTrackerProps> = ({SetCharacterFile}) => {
     setPendingCharacter(null);
   };
 
+  const handleInitiativeChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const newCombatCharacters = [...combatCharacters];
+    var newInitiative = 0;
+    if (!isNaN(parseInt(e.target.value, 10))) {
+      newInitiative = parseInt(e.target.value, 10);
+    }
+    newCombatCharacters[index].initiative = newInitiative;
+    setCombatCharacters(newCombatCharacters);
+  }
+
   const handleCharacterClick = (character: Character, SetCharacterFile: (file: File) => void) => {
     SetCharacterFile(character.fileReference);
-    // TODO: activate a callback to set the character display in parent
-    const dynamicDataKeys = Object.keys(character.dynamicData);
-
-    const tableRows = dynamicDataKeys.map((key) => (
-      <tr key={key}>
-        <td>{key}</td>
-        <td>{character.dynamicData[key]}</td>
-      </tr>
-    ));
-
-    const modalContent = (
-      <div>
-        <h3>{character.name} - Dynamic Data</h3>
-        <table>
-          <tbody>{tableRows}</tbody>
-        </table>
-      </div>
-    );
-
-    // Using window.alert for simplicity, consider using a modal library for a better user experience
   };
 
   const handleMoveActiveCharacter = (direction: Direction) => {
@@ -189,7 +179,7 @@ const CombatTracker: React.FC<CombatTrackerProps> = ({SetCharacterFile}) => {
             <tr
               key={index}
               onClick={() => handleCharacterClick(character, SetCharacterFile)}
-              className={character.active ? "bg-gray-200" : ""}
+              className={character.active ? "bg-gray-100 dark:bg-gray-800" : ""}
               data-testid={
                 character.active ? `${activeCharacterTestId}${index}` : ""
               }
@@ -198,7 +188,14 @@ const CombatTracker: React.FC<CombatTrackerProps> = ({SetCharacterFile}) => {
                 {character.active && <CheckmarkIconPositive />}
               </td>
               <td className="border p-2">{character.name}</td>
-              <td className="border p-2">{character.initiative}</td>
+              <td className="border p-2">
+                <input
+                  type="text"
+                  className="w-full p-1 border rounded bg-white dark:bg-gray-800 text-black dark:text-white"
+                  value={character.initiative}
+                  onChange={(e) => handleInitiativeChange(e, index)}
+                />
+              </td>
             </tr>
           ))}
         </tbody>
