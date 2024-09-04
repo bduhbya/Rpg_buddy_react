@@ -50,6 +50,7 @@ const CombatTracker: React.FC<CombatTrackerProps> = ({SetCharacterFile}) => {
             fileReference: file,
             dynamicData: jsonData,
             initiative: 0,
+            initiativeDisplay: 0,
             active: false,
           });
         } catch (error) {
@@ -86,12 +87,19 @@ const CombatTracker: React.FC<CombatTrackerProps> = ({SetCharacterFile}) => {
     setPendingCharacter(null);
   };
 
-  const handleInitiativeChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+  const handleInitiativeInputChange = (initiative: string, index: number) => {
     const newCombatCharacters = [...combatCharacters];
     var newInitiative = 0;
-    if (!isNaN(parseInt(e.target.value, 10))) {
-      newInitiative = parseInt(e.target.value, 10);
+    if (initiative !== '') {
+      newInitiative = parseInt(initiative);
     }
+    newCombatCharacters[index].initiativeDisplay = newInitiative;
+    setCombatCharacters(newCombatCharacters);
+  }
+
+  const handleInitiativeChange = (index: number) => {
+    const newCombatCharacters = [...combatCharacters];
+    const newInitiative = newCombatCharacters[index].initiativeDisplay;
     newCombatCharacters[index].initiative = newInitiative;
     setCombatCharacters(newCombatCharacters);
   }
@@ -190,10 +198,15 @@ const CombatTracker: React.FC<CombatTrackerProps> = ({SetCharacterFile}) => {
               <td className="border p-2">{character.name}</td>
               <td className="border p-2">
                 <input
-                  type="text"
+                  type="number"
                   className="w-full p-1 border rounded bg-white dark:bg-gray-800 text-black dark:text-white"
-                  value={character.initiative}
-                  onChange={(e) => handleInitiativeChange(e, index)}
+                  value={character.initiativeDisplay}
+                  onChange={(e) => handleInitiativeInputChange(e.target.value, index)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleInitiativeChange(index);
+                    }
+                  }}
                 />
               </td>
             </tr>

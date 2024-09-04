@@ -26,6 +26,7 @@ const InitiativeInputDialog: React.FC<InitiativeInputDialogProps> = ({
       ...character,
       name: name,
       initiative: initiative,
+      initiativeDisplay: initiative
     };
     onConfirm(newCharacter, SetCharacterFile);
   };
