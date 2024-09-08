@@ -48,7 +48,6 @@ const CombatTracker: React.FC<CombatTrackerProps> = ({SetCharacterFile}) => {
           setPendingCharacter({
             name: jsonData.name || "UNKNOWN",
             fileReference: file,
-            dynamicData: jsonData,
             initiative: 0,
             initiativeDisplay: 0,
             active: false,

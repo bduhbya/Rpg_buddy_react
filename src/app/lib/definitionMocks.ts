@@ -57,16 +57,16 @@ export const mockSingleCharacterWarrior: Character = {
   name: mockSingleCharacterWarriorDataParsed.name,
   initiative: 0,
   fileReference: mockSingleCharacterFile_warrior,
-  dynamicData: mockSingleCharacterWarriorDataParsed,
   active: false,
+  initiativeDisplay: 0
 };
 
 export const mockSingleCharacterMage: Character = {
   name: mockSingleCharacterMageDataParsed.name,
   initiative: 0,
   fileReference: mockSingleCharacterFile_mage,
-  dynamicData: mockSingleCharacterMageDataParsed,
   active: false,
+  initiativeDisplay: 0
 };
 
 export const mockSingleCharacterWarriorFile = mockSingleCharacterFile_warrior;
