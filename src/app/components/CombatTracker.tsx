@@ -13,7 +13,7 @@ export interface CombatTrackerProps {
   SetCharacterFile: (file: File) => void;
 }
 
-const CombatTracker: React.FC<CombatTrackerProps> = ({SetCharacterFile}) => {
+const CombatTracker: React.FC<CombatTrackerProps> = ({ SetCharacterFile }) => {
   const DIRECTION_UP = "up";
   const DIRECTION_DOWN = "down";
   type Direction = typeof DIRECTION_UP | typeof DIRECTION_DOWN;
@@ -69,7 +69,10 @@ const CombatTracker: React.FC<CombatTrackerProps> = ({SetCharacterFile}) => {
     }
   };
 
-  const handleConfirmAddCharacter = (newCharacter: Character, SetCharacterFile: (file: File) => void) => {
+  const handleConfirmAddCharacter = (
+    newCharacter: Character,
+    SetCharacterFile: (file: File) => void,
+  ) => {
     if (combatCharacters.length === 0) {
       newCharacter.active = true;
       SetCharacterFile(newCharacter.fileReference);
@@ -89,21 +92,24 @@ const CombatTracker: React.FC<CombatTrackerProps> = ({SetCharacterFile}) => {
   const handleInitiativeInputChange = (initiative: string, index: number) => {
     const newCombatCharacters = [...combatCharacters];
     var newInitiative = 0;
-    if (initiative !== '') {
+    if (initiative !== "") {
       newInitiative = parseInt(initiative);
     }
     newCombatCharacters[index].initiativeDisplay = newInitiative;
     setCombatCharacters(newCombatCharacters);
-  }
+  };
 
   const handleInitiativeChange = (index: number) => {
     const newCombatCharacters = [...combatCharacters];
     const newInitiative = newCombatCharacters[index].initiativeDisplay;
     newCombatCharacters[index].initiative = newInitiative;
     setCombatCharacters(newCombatCharacters);
-  }
+  };
 
-  const handleCharacterClick = (character: Character, SetCharacterFile: (file: File) => void) => {
+  const handleCharacterClick = (
+    character: Character,
+    SetCharacterFile: (file: File) => void,
+  ) => {
     SetCharacterFile(character.fileReference);
   };
 
@@ -200,9 +206,11 @@ const CombatTracker: React.FC<CombatTrackerProps> = ({SetCharacterFile}) => {
                   type="number"
                   className="w-full p-1 border rounded bg-white dark:bg-gray-800 text-black dark:text-white"
                   value={character.initiativeDisplay}
-                  onChange={(e) => handleInitiativeInputChange(e.target.value, index)}
+                  onChange={(e) =>
+                    handleInitiativeInputChange(e.target.value, index)
+                  }
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
+                    if (e.key === "Enter") {
                       handleInitiativeChange(index);
                     }
                   }}

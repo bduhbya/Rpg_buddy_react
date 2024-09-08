@@ -58,7 +58,7 @@ export const mockSingleCharacterWarrior: Character = {
   initiative: 0,
   fileReference: mockSingleCharacterFile_warrior,
   active: false,
-  initiativeDisplay: 0
+  initiativeDisplay: 0,
 };
 
 export const mockSingleCharacterMage: Character = {
@@ -66,7 +66,7 @@ export const mockSingleCharacterMage: Character = {
   initiative: 0,
   fileReference: mockSingleCharacterFile_mage,
   active: false,
-  initiativeDisplay: 0
+  initiativeDisplay: 0,
 };
 
 export const mockSingleCharacterWarriorFile = mockSingleCharacterFile_warrior;

@@ -5,10 +5,13 @@ import strings from "@/strings";
 
 export type InitiativeInputDialogProps = {
   character: Character;
-  onConfirm: (newCharacter: Character, SetCharacterFile: (file: File) => void) => void;
+  onConfirm: (
+    newCharacter: Character,
+    SetCharacterFile: (file: File) => void,
+  ) => void;
   onCancel: () => void;
   duplicateEntryOrEmpty: boolean;
-  SetCharacterFile: (file: File) => void
+  SetCharacterFile: (file: File) => void;
 };
 export const DEFAULT_INITIATIVE = 0;
 
@@ -17,7 +20,7 @@ const InitiativeInputDialog: React.FC<InitiativeInputDialogProps> = ({
   onConfirm,
   onCancel,
   duplicateEntryOrEmpty,
-  SetCharacterFile
+  SetCharacterFile,
 }) => {
   const [initiative, setInitiative] = useState<number>(DEFAULT_INITIATIVE);
   const [name, setName] = useState<string>(character.name);
@@ -26,7 +29,7 @@ const InitiativeInputDialog: React.FC<InitiativeInputDialogProps> = ({
       ...character,
       name: name,
       initiative: initiative,
-      initiativeDisplay: initiative
+      initiativeDisplay: initiative,
     };
     onConfirm(newCharacter, SetCharacterFile);
   };

@@ -41,7 +41,7 @@ export default function Home() {
         </div> */}
 
       <div className="mai flex justify-start items-center gap-x-4">
-        <CombatTracker SetCharacterFile={setCharacterFile}/>
+        <CombatTracker SetCharacterFile={setCharacterFile} />
         <div className="flex-grow">
           <CharacterDisplay sourceFile={characterFile} />
         </div>
