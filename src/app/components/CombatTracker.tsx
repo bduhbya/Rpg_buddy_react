@@ -9,7 +9,11 @@ import { BasicDialog, DialogData, DialogType } from "./BasicDialog";
 
 export const activeCharacterTestId = "active-combat-character-row-";
 
-const CombatTracker: React.FC = () => {
+export interface CombatTrackerProps {
+  SetCharacterFile: (file: File) => void;
+}
+
+const CombatTracker: React.FC<CombatTrackerProps> = ({ SetCharacterFile }) => {
   const DIRECTION_UP = "up";
   const DIRECTION_DOWN = "down";
   type Direction = typeof DIRECTION_UP | typeof DIRECTION_DOWN;
@@ -44,8 +48,8 @@ const CombatTracker: React.FC = () => {
           setPendingCharacter({
             name: jsonData.name || "UNKNOWN",
             fileReference: file,
-            dynamicData: jsonData,
             initiative: 0,
+            initiativeDisplay: 0,
             active: false,
           });
         } catch (error) {
@@ -65,9 +69,13 @@ const CombatTracker: React.FC = () => {
     }
   };
 
-  const handleConfirmAddCharacter = (newCharacter: Character) => {
+  const handleConfirmAddCharacter = (
+    newCharacter: Character,
+    SetCharacterFile: (file: File) => void,
+  ) => {
     if (combatCharacters.length === 0) {
       newCharacter.active = true;
+      SetCharacterFile(newCharacter.fileReference);
     }
     // Add the character to combatCharacters
     setCombatCharacters([...combatCharacters, newCharacter]);
@@ -81,28 +89,38 @@ const CombatTracker: React.FC = () => {
     setPendingCharacter(null);
   };
 
-  const handleCharacterClick = (character: Character) => {
-    // TODO: activate a callback to set the character display in parent
-    const dynamicDataKeys = Object.keys(character.dynamicData);
+  const handleInitiativeInputChange = (initiative: string, index: number) => {
+    const newCombatCharacters = [...combatCharacters];
+    var newInitiative = 0;
+    if (initiative !== "") {
+      newInitiative = parseInt(initiative);
+    }
+    newCombatCharacters[index].initiativeDisplay = newInitiative;
+    setCombatCharacters(newCombatCharacters);
+  };
 
-    const tableRows = dynamicDataKeys.map((key) => (
-      <tr key={key}>
-        <td>{key}</td>
-        <td>{character.dynamicData[key]}</td>
-      </tr>
-    ));
+  const handleInitiativeChange = (index: number) => {
+    const newCombatCharacters = [...combatCharacters];
+    const newInitiative = newCombatCharacters[index].initiativeDisplay;
+    newCombatCharacters[index].initiative = newInitiative;
+    setCombatCharacters(newCombatCharacters);
+  };
 
-    const modalContent = (
-      <div>
-        <h3>{character.name} - Dynamic Data</h3>
-        <table>
-          <tbody>{tableRows}</tbody>
-        </table>
-      </div>
-    );
+  const handleCharacterDelete = (index: number) => {
+    const newCombatCharacters = [...combatCharacters];
+    if (newCombatCharacters[index].active) {
+      // If the character being deleted is the active character, set the next character as active
+      newCombatCharacters[(index + 1) % newCombatCharacters.length].active = true;
+    }
+    newCombatCharacters.splice(index, 1);
+    setCombatCharacters(newCombatCharacters);
+  };
 
-    // Using window.alert for simplicity, consider using a modal library for a better user experience
-    window.alert(JSON.stringify(character.dynamicData, null, 2));
+  const handleCharacterClick = (
+    character: Character,
+    SetCharacterFile: (file: File) => void,
+  ) => {
+    SetCharacterFile(character.fileReference);
   };
 
   const handleMoveActiveCharacter = (direction: Direction) => {
@@ -165,6 +183,7 @@ const CombatTracker: React.FC = () => {
           onConfirm={handleConfirmAddCharacter}
           onCancel={handleCancelAddCharacter}
           duplicateEntryOrEmpty={isDuplicateOrEmpty}
+          SetCharacterFile={SetCharacterFile}
         />
       )}
       <table className="border-collapse border">
@@ -175,6 +194,7 @@ const CombatTracker: React.FC = () => {
               {strings.currentCharacterColumnLabel}
             </th>
             <th className="border p-2">{strings.characterNameColumnLabel}</th>
+            <th className="border p-2">{strings.actionsLabel}</th>
             <th className="border p-2">{strings.initiativeColumnLabel}</th>
           </tr>
         </thead>
@@ -182,8 +202,8 @@ const CombatTracker: React.FC = () => {
           {combatCharacters.map((character, index) => (
             <tr
               key={index}
-              onClick={() => handleCharacterClick(character)}
-              className={character.active ? "bg-gray-200" : ""}
+              onClick={() => handleCharacterClick(character, SetCharacterFile)}
+              className={character.active ? "bg-gray-100 dark:bg-gray-800" : ""}
               data-testid={
                 character.active ? `${activeCharacterTestId}${index}` : ""
               }
@@ -192,7 +212,29 @@ const CombatTracker: React.FC = () => {
                 {character.active && <CheckmarkIconPositive />}
               </td>
               <td className="border p-2">{character.name}</td>
-              <td className="border p-2">{character.initiative}</td>
+              <td className="border p-2">
+                <button
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded-full mb-4 mr-4"
+                  onClick={() => handleCharacterDelete(index)}
+                >
+                  {strings.deleteString}
+                </button>
+              </td>
+              <td className="border p-2">
+                <input
+                  type="number"
+                  className="w-full p-1 border rounded bg-white dark:bg-gray-800 text-black dark:text-white"
+                  value={character.initiativeDisplay}
+                  onChange={(e) =>
+                    handleInitiativeInputChange(e.target.value, index)
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleInitiativeChange(index);
+                    }
+                  }}
+                />
+              </td>
             </tr>
           ))}
         </tbody>
