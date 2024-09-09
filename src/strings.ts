@@ -3,6 +3,7 @@
 const strings = {
   // Common strings
   cancelString: "Cancel",
+  deleteString: "Delete",
 
   // CombatTracker strings
   addToCombatButton: "Add Character to Combat",
@@ -15,6 +16,7 @@ const strings = {
   fileParsingError: "Unable to parse JSON file",
   moveUpLabel: "Move Up",
   moveDownLabel: "Move Down",
+  actionsLabel: "Actions",
 
   // InitiativeInputDialog strings
   initiativePrompt: "Enter Initiative",

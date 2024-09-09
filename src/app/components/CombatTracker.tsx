@@ -106,6 +106,16 @@ const CombatTracker: React.FC<CombatTrackerProps> = ({ SetCharacterFile }) => {
     setCombatCharacters(newCombatCharacters);
   };
 
+  const handleCharacterDelete = (index: number) => {
+    const newCombatCharacters = [...combatCharacters];
+    if (newCombatCharacters[index].active) {
+      // If the character being deleted is the active character, set the next character as active
+      newCombatCharacters[(index + 1) % newCombatCharacters.length].active = true;
+    }
+    newCombatCharacters.splice(index, 1);
+    setCombatCharacters(newCombatCharacters);
+  };
+
   const handleCharacterClick = (
     character: Character,
     SetCharacterFile: (file: File) => void,
@@ -184,6 +194,7 @@ const CombatTracker: React.FC<CombatTrackerProps> = ({ SetCharacterFile }) => {
               {strings.currentCharacterColumnLabel}
             </th>
             <th className="border p-2">{strings.characterNameColumnLabel}</th>
+            <th className="border p-2">{strings.actionsLabel}</th>
             <th className="border p-2">{strings.initiativeColumnLabel}</th>
           </tr>
         </thead>
@@ -201,6 +212,14 @@ const CombatTracker: React.FC<CombatTrackerProps> = ({ SetCharacterFile }) => {
                 {character.active && <CheckmarkIconPositive />}
               </td>
               <td className="border p-2">{character.name}</td>
+              <td className="border p-2">
+                <button
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded-full mb-4 mr-4"
+                  onClick={() => handleCharacterDelete(index)}
+                >
+                  {strings.deleteString}
+                </button>
+              </td>
               <td className="border p-2">
                 <input
                   type="number"
