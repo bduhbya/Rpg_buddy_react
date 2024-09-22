@@ -1,6 +1,10 @@
 import argparse
+import json
 
+BULLET = "â€¢"
 PL_TAG = "PL"
+MR_TAG = "MR"
+NAME_TAG = "Name"
 
 
 def process_args():
@@ -15,20 +19,26 @@ def process_args():
 
 
 def process_file(filename):
+    json_data = None
     with open(filename, "r") as f:
         for line in f:
             print(line)
-            if PL_TAG in line:
-                parse_name_line(line)
+            if BULLET in line:
+                json_data = parse_name_line(line)
 
 
 def parse_name_line(line):
-    data = line.split("•")
-    pl_index = data[0].find(PL_TAG)
-    name = line[:pl_index].strip()
-    line = line[pl_index + len(PL_TAG) :]
-
-    print("Name: ", name)
+    # data = line.split("\u2022")
+    data = line.split(BULLET)
+    name_pl = data[0].split(PL_TAG)
+    name = name_pl[0].strip()
+    power_level = name_pl[1].strip()
+    mr = data[1].strip()
+    returnDict = {NAME_TAG: name, PL_TAG: power_level, MR_TAG: mr}
+    print(returnDict)
+    json_data = json.dumps(returnDict, indent=2)
+    print(json_data)
+    return json_data
 
 
 def main():
