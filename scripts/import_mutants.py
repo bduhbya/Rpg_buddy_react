@@ -2,9 +2,13 @@ import argparse
 import json
 
 BULLET = "â€¢"
+TYPE_SEPARATOR = "."
+ITEM_SEPARATOR = ","
 PL_TAG = "PL"
 MR_TAG = "MR"
 NAME_TAG = "Name"
+EQUIP_TAG = "Equipment"
+ADV_TAG = "Advantages"
 
 
 def process_args():
@@ -20,14 +24,31 @@ def process_args():
 
 def process_file(filename):
     json_data = {}
+    # After the first 2 lines, we concatenate the rest of the lines
+    # because the remaning lines are not uniform
+    remaning_lines = ""
     with open(filename, "r") as f:
         for line in f:
             print(line)
             if BULLET in line:
                 json_data.update(parse_name_line(line))
-            elif "STR" in line:
+            elif "STR " in line:
                 json_data.update(parse_attribute_line(line))
+            else:
+                remaning_lines += line.strip("\n") + " "
+    # print(remaning_lines)
+    json_data.update(parse_equipment(remaning_lines))
     print(json_data)
+
+
+def parse_equipment(remaning_lines):
+    equipment_list = remaning_lines.split(EQUIP_TAG + ":")[1].split(TYPE_SEPARATOR)[0]
+    equipment_list = equipment_list.split(ITEM_SEPARATOR)
+    # for item in equipment_list:
+    for i, item in enumerate(equipment_list):
+        equipment_list[i] = item.lstrip().rstrip()
+    equipment = {EQUIP_TAG: equipment_list}
+    return equipment
 
 
 def parse_attribute_line(line):
