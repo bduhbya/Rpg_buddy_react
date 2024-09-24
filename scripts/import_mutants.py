@@ -9,6 +9,10 @@ MR_TAG = "MR"
 NAME_TAG = "Name"
 EQUIP_TAG = "Equipment"
 ADV_TAG = "Advantages"
+SKILLS_TAG = "Skills"
+OFFENSE_TAG = "Offense"
+DEFENSE_TAG = "Defense"
+TOTALS_TAG = "Totals"
 
 
 def process_args():
@@ -37,18 +41,26 @@ def process_file(filename):
             else:
                 remaning_lines += line.strip("\n") + " "
     # print(remaning_lines)
-    json_data.update(parse_equipment(remaning_lines))
+    json_data.update(parse_tag(EQUIP_TAG, remaning_lines))
+    json_data.update(parse_tag(ADV_TAG, remaning_lines))
+    json_data.update(parse_tag(SKILLS_TAG, remaning_lines))
+    json_data.update(parse_tag(OFFENSE_TAG, remaning_lines))
+    json_data.update(parse_tag(DEFENSE_TAG, remaning_lines))
+    json_data.update(parse_tag(TOTALS_TAG, remaning_lines))
     print(json_data)
 
 
-def parse_equipment(remaning_lines):
-    equipment_list = remaning_lines.split(EQUIP_TAG + ":")[1].split(TYPE_SEPARATOR)[0]
-    equipment_list = equipment_list.split(ITEM_SEPARATOR)
-    # for item in equipment_list:
-    for i, item in enumerate(equipment_list):
-        equipment_list[i] = item.lstrip().rstrip()
-    equipment = {EQUIP_TAG: equipment_list}
-    return equipment
+def parse_tag(tag, remaning_lines):
+    tag_list = remaning_lines.split(tag + ":")[1].split(TYPE_SEPARATOR)[0]
+    tag_list = tag_list.split(ITEM_SEPARATOR)
+    tag_dict = {tag: clear_spaces(tag_list)}
+    return tag_dict
+
+
+def clear_spaces(tup):
+    for i, item in enumerate(tup):
+        tup[i] = item.lstrip().rstrip()
+    return tup
 
 
 def parse_attribute_line(line):
